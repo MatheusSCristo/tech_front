@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
-import { Sansita, VT323 } from "next/font/google";
+import { Sansita } from "next/font/google";
 import "./globals.css";
 
 const sansita = Sansita({
   subsets: ["latin"],
   weight: ["400", "700", "800", "900"],
   variable: "--font-sansita",
-});
-
-const vt323 = VT323({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-vt",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${sansita.className} ${vt323.className}`}>
+      <body className={` ${sansita.className}`}>
         {children}
       </body>
     </html>

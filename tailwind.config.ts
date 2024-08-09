@@ -8,10 +8,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      fontFamily:{
-        sansita:"var(--font-sansita)",
-        vt:"var(--font-vt)",
-      }
+      backgroundImage: {
+        blueGradiant: "linear-gradient(180deg, #207FD7 0%, #004E96 100%)",
+      },
+      colors: {
+        blue: "#004E96",
+        lightBlue: "#207FD7",
+      },
     },
   },
   plugins: [],
