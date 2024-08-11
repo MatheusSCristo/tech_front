@@ -1,16 +1,21 @@
 "use client";
 import TextInput from "@/app/components/TextInput";
+import { UserContext } from "@/app/context/UserContext";
 import {
   loginRequestSchema,
   loginRequestType,
 } from "@/schemas/loginRequestSchema";
+import { UserType } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
 
 const Login = () => {
+  const { setUser } = useContext(UserContext);
+
   const {
     register,
     handleSubmit,
@@ -28,8 +33,8 @@ const Login = () => {
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
-    
+    const result: UserType = await response.json();
+    setUser(result);
   };
 
   return (
