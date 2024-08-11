@@ -17,11 +17,11 @@ const TextInput = ({
     <div
       className={`${className} flex gap-2 rounded shadow-2xl p-2 items-center`}
     >
-      {Icon && <Icon className="text-lightBlue" size={40} />}
+      {Icon && <Icon className="text-lightBlue" size={30} />}
       <input
         type={type}
         placeholder={placeholder}
-        className="bg-transparent border-none text-[1.5em] w-full focus:outline-none"
+        className="bg-transparent border-none text-[1em] w-full focus:outline-none"
       />
     </div>
   );
