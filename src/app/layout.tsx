@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Sansita } from "next/font/google";
+import ContextProvider from "./context/ContextProvider";
 import "./globals.css";
 
 const sansita = Sansita({
@@ -20,9 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={` ${sansita.className}`}>
-        {children}
-      </body>
+      <ContextProvider>
+        <body className={` ${sansita.className}`}>{children}</body>
+      </ContextProvider>
     </html>
   );
 }

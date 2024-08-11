@@ -1,15 +1,20 @@
+import { UseFormRegister } from "react-hook-form";
 import { IconType } from "react-icons";
 
 const TextInput = ({
   placeholder,
   icon,
   className,
-  type="text",
+  type = "text",
+  register,
+  registerType
 }: {
   placeholder: string;
   icon?: IconType;
   className: string;
-  type?:string;
+  type?: string;
+  registerType?: string;
+  register:UseFormRegister<any>
 }) => {
   const Icon = icon;
 
@@ -22,6 +27,7 @@ const TextInput = ({
         type={type}
         placeholder={placeholder}
         className="bg-transparent border-none text-[1em] w-full focus:outline-none"
+        {...register(registerType || "")}
       />
     </div>
   );
