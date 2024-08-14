@@ -1,14 +1,15 @@
-"use client"
+"use client";
 
-import React from 'react'
-import { UserProvider } from './UserContext'
+import { SessionProvider } from "next-auth/react";
+import React from "react";
+import { UserProvider } from "./UserContext";
 
-const ContextProvider = ({children}:{children:React.ReactNode}) => {
+const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <UserProvider>
-        {children}
-    </UserProvider>
-  )
-}
+    <SessionProvider>
+      <UserProvider>{children}</UserProvider>
+    </SessionProvider>
+  );
+};
 
-export default ContextProvider
+export default ContextProvider;

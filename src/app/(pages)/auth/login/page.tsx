@@ -3,10 +3,11 @@ import TextInput from "@/app/components/TextInput";
 import { UserContext } from "@/app/context/UserContext";
 import {
   loginRequestSchema,
-  loginRequestType,
+  LoginRequestType,
 } from "@/schemas/loginRequestSchema";
 import { UserType } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useContext } from "react";
@@ -15,16 +16,15 @@ import { MdEmail, MdLock } from "react-icons/md";
 
 const Login = () => {
   const { setUser } = useContext(UserContext);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<loginRequestType>({
+  } = useForm<LoginRequestType>({
     resolver: zodResolver(loginRequestSchema),
   });
 
-  const onSubmit = async (data: loginRequestType) => {
+  const onSubmit = async (data: LoginRequestType) => {
     const response = await fetch("/api/login", {
       method: "POST",
       headers: {
@@ -37,6 +37,10 @@ const Login = () => {
     setUser(result);
   };
 
+  //GOOGLE LOGIN TO-DO
+
+ 
+
   return (
     <section className="w-full h-screen flex flex-col xl:flex-row gap-0">
       <div className="hidden xl:block w-1/2 h-full relative">
@@ -45,6 +49,7 @@ const Login = () => {
           alt="Login background"
           fill
           className="object-cover"
+          priority
         />
       </div>
       <div className="bg-blueGradiant flex-1 xl:w-1/2 xl:h-full p-4 flex flex-col items-center justify-center relative">
@@ -81,7 +86,10 @@ const Login = () => {
               Entrar
             </button>
           </form>
-          <button className="flex items-center gap-4 mt-3 w-fit bg-white text-[1em] rounded p-2 hover:scale-[1.05] duration-300 hover:bg-[#f1f1f1]">
+          <button
+            onClick={() => signIn("google")}
+            className="flex items-center gap-4 mt-3 w-fit bg-white text-[1em] rounded p-2 hover:scale-[1.05] duration-300 hover:bg-[#f1f1f1]"
+          >
             <div className="relative w-[25px] h-[25px]">
               <Image src="/images/icons/google.svg" alt="Google" fill />
             </div>

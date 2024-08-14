@@ -7,4 +7,4 @@ export const loginRequestSchema = z.object({
   password: z.string().min(0, "É necessário informar a senha do usuário"),
 });
 
-export type loginRequestType = z.infer<typeof loginRequestSchema>;
+export type LoginRequestType = z.infer<typeof loginRequestSchema>;
