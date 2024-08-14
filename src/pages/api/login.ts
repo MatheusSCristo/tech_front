@@ -18,6 +18,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
         body: JSON.stringify(body),
       });
+      if(!response.ok){
+        const errorData = await response.json();
+        console.log(errorData)
+        res.status(response.status).json({ error: errorData || 'Erro ao logar usuário' });
+        return;
+      }
+      
+      
       const data:Data = await response.json();
       res.status(response.status).json(data.user_data);
     } catch (error:any) {

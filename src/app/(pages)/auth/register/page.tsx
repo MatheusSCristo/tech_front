@@ -10,59 +10,64 @@ import { UserType } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdEmail, MdLock, MdPerson } from "react-icons/md";
 
+const getSemestersOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const semester = Array.from(
+    { length: 22 },
+    (_, i) => currentYear - Math.floor(i / 2)
+  ).map((year, i) => ({
+    name: `${year}.${i % 2 ? 1 : 2}`,
+    value: `${year}.${i % 2 ? 1 : 2}`,
+  }));
+  return semester;
+};
+
+const structureOptions = [
+  { name: "Tecnologia da Informação - Matutino", value: 0 },
+  { name: "Tecnologia da Informação - Noturno", value: 1 },
+  { name: "Tecnologia da Informação - Engenharia de Software", value: 2 },
+  { name: "Tecnologia da Informação - Ciências da Computação", value: 3 },
+];
+
+const textInputs = [
+  { placeholder: "Nome completo", icon: MdPerson, registerType: "name" },
+  { placeholder: "Email", icon: MdEmail, registerType: "email" },
+  {
+    placeholder: "Senha",
+    icon: MdLock,
+    registerType: "password",
+    type: "password",
+  },
+  {
+    placeholder: "Confirmar senha",
+    icon: MdLock,
+    registerType: "confirmPassword",
+    type: "password",
+  },
+];
+
 const Register = () => {
   const { setUser } = useContext(UserContext);
-  const [error, setError] = useState<String>("");
+  const [error, setError] = useState<String | null >(null);
+  const router=useRouter();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields },
+    formState: { errors },
   } = useForm<RegisterRequestType>({
     resolver: zodResolver(registerRequestSchema),
   });
 
-  const getSemestersOptions = () => {
-    const currentYear = new Date().getFullYear();
-    const semester = Array.from(
-      { length: 22 },
-      (_, i) => currentYear - Math.floor(i / 2)
-    ).map((year, i) => ({
-      name: `${year}.${i % 2 ? 1 : 2}`,
-      value: `${year}.${i % 2 ? 1 : 2}`,
-    }));
-    return semester;
-  };
 
-  const structureOptions = [
-    { name: "Tecnologia da Informação - Matutino", value: 0 },
-    { name: "Tecnologia da Informação - Noturno", value: 1 },
-    { name: "Tecnologia da Informação - Engenharia de Software", value: 2 },
-    { name: "Tecnologia da Informação - Ciências da Computação", value: 3 },
-  ];
-
-  const textInputs = [
-    { placeholder: "Nome completo", icon: MdPerson, registerType: "name" },
-    { placeholder: "Email", icon: MdEmail, registerType: "email" },
-    {
-      placeholder: "Senha",
-      icon: MdLock,
-      registerType: "password",
-      type: "password",
-    },
-    {
-      placeholder: "Confirmar senha",
-      icon: MdLock,
-      registerType: "confirmPassword",
-      type: "password",
-    },
-  ];
 
   const onSubmit = async (data: RegisterRequestType) => {
+    setError(null)
     const response = await fetch("/api/register", {
       method: "POST",
       headers: {
@@ -78,6 +83,8 @@ const Register = () => {
     }
     const result: UserType = await response.json();
     setUser(result);
+    setTimeout(()=>router.push('/'),1000) 
+    
   };
 
   return (

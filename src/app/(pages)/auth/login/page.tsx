@@ -10,12 +10,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
 
 const Login = () => {
   const { setUser } = useContext(UserContext);
+  const router=useRouter();
+  const [error, setError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -25,6 +29,7 @@ const Login = () => {
   });
 
   const onSubmit = async (data: LoginRequestType) => {
+    setError(null);
     const response = await fetch("/api/login", {
       method: "POST",
       headers: {
@@ -32,14 +37,17 @@ const Login = () => {
       },
       body: JSON.stringify(data),
     });
-
+    if (!response.ok) {
+      setError("Erro na validação das credenciais, tente novamente.");
+      return;
+    }
     const result: UserType = await response.json();
     setUser(result);
+    setTimeout(()=>router.push('/'),1000) 
+
   };
 
   //GOOGLE LOGIN TO-DO
-
- 
 
   return (
     <section className="w-full h-screen flex flex-col xl:flex-row gap-0">
@@ -61,23 +69,33 @@ const Login = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-5 items-center"
           >
-            <TextInput
-              placeholder="Email"
-              icon={MdEmail}
-              className="bg-white w-full"
-              registerType="email"
-              register={register}
-            />
-            {errors.email && <span>{errors.email.message}</span>}
-            <TextInput
-              placeholder="Senha"
-              icon={MdLock}
-              className="bg-white w-full"
-              type="password"
-              registerType="password"
-              register={register}
-            />
-            {errors.password && <span>{errors.password.message}</span>}
+            <div className="flex flex-col items-center w-full">
+              <TextInput
+                placeholder="Email"
+                icon={MdEmail}
+                className="bg-white w-full"
+                registerType="email"
+                register={register}
+              />
+              {errors.email && (
+                <span className="text-[#ff6d6d] ">{errors.email.message}</span>
+              )}
+            </div>
+            <div className="flex flex-col items-center w-full">
+              <TextInput
+                placeholder="Senha"
+                icon={MdLock}
+                className="bg-white w-full"
+                type="password"
+                registerType="password"
+                register={register}
+              />
+              {errors.password && (
+                <span className="text-[#ff6d6d] ">
+                  {errors.password.message}
+                </span>
+              )}
+            </div>
 
             <button
               type="submit"
@@ -95,6 +113,12 @@ const Login = () => {
             </div>
             Continuar com google
           </button>
+
+          {error && (
+                <span className="text-[#ff6d6d] ">
+                  {error}
+                </span>
+              )}
         </div>
         <div className="text-white  text-[1em] flex gap-1 absolute bottom-5 right-5">
           <span>Não tem conta ainda?</span>
