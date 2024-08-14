@@ -12,7 +12,7 @@ const Navbar = () => {
   const { user } = useContext(UserContext);
 
   return (
-    <nav className="bg-white w-full flex items-center gap-[5%] px-5 py-1 relative">
+    <nav className="bg-white w-full flex items-center gap-[5%] px-5 py-2 relative">
       <Link
         href={"/"}
         className="bg-clip-text text-transparent bg-blueGradiant text-[2.5em]"

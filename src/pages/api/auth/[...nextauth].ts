@@ -5,8 +5,8 @@ export default NextAuth({
   providers: [
     GoogleProvider({
       clientId:
-        "342296519044-5m7s5ht8310tv1s4nj49b5pcrfe0tips.apps.googleusercontent.com",
-      clientSecret: "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",
+        "",
+      clientSecret: "",
     }),
   ],
   callbacks: {
