@@ -7,10 +7,10 @@ import { useContext } from "react";
 const Dashboard = () => {
   const { user } = useContext(UserContext);
   return (
-    <div className="bg-[#ffffffd6] flex flex-col rounded-xl items-center px-10 pt-5 pb-10">
+    <div className="bg-[#ffffffd6] flex flex-col rounded-xl items-center px-3 pt-5 pb-10">
       <h1 className="text-[2em]">Dashboard</h1>
-      <div className="flex gap-2">
-        <div className="relative w-[80px] h-[80px]">
+      <div className="flex gap-2 w-full">
+        <div className="relative w-[60px] h-[60px] ">
           <Image
             src={user?.image_url || "/images/icons/user_profile.svg"}
             alt="User image"
@@ -18,8 +18,8 @@ const Dashboard = () => {
             className="object-cover"
           />
         </div>
-        <div className="flex flex-col">
-          <h1 className="capitalize text-[1.2em] font-bold">{user?.name}</h1>
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <h1 className="capitalize text-[1.2em] font-bold text-truncate ">{user?.name}</h1>
           <h2 className="capitalize text-[0.8em]">
             Tecnologia da Informação 2024.1
           </h2>
@@ -33,9 +33,9 @@ const Dashboard = () => {
           </h3>
           <LinearProgress variant="determinate" value={50} />
         </div>
-        <div className="w-full ">
+        <div className="w-full">
           <h3>
-            Matérias obrigátorias:35/{user?.structure.mandatory_subjects.length}
+            Matérias optativas:35/{user?.structure.optional_subjects.length}
           </h3>
           <LinearProgress variant="determinate" value={50} />
         </div>

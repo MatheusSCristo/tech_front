@@ -17,6 +17,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   },[]);
   useEffect(() => {
+    if(user)
     localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
   return (
