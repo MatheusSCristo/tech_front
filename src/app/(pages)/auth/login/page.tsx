@@ -17,7 +17,7 @@ import { MdEmail, MdLock } from "react-icons/md";
 
 const Login = () => {
   const { setUser } = useContext(UserContext);
-  const router=useRouter();
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
   const {
@@ -38,13 +38,16 @@ const Login = () => {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      setError("Erro na validação das credenciais, tente novamente.");
+      setError(
+        response.status == 500
+          ? "Erro ao conectar com o servidor"
+          : "Erro na validação das credenciais, tente novamente."
+      );
       return;
     }
     const result: UserType = await response.json();
     setUser(result);
-    setTimeout(()=>router.push('/'),1000) 
-
+    setTimeout(() => router.push("/"), 1000);
   };
 
   //GOOGLE LOGIN TO-DO
@@ -114,11 +117,7 @@ const Login = () => {
             Continuar com google
           </button>
 
-          {error && (
-                <span className="text-[#ff6d6d] ">
-                  {error}
-                </span>
-              )}
+          {error && <span className="text-[#ff6d6d] ">{error}</span>}
         </div>
         <div className="text-white  text-[1em] flex gap-1 absolute bottom-5 right-5">
           <span>Não tem conta ainda?</span>
