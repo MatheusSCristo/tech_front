@@ -1,14 +1,13 @@
+
 type Options = {
   method: string;
   headers: {
     "Content-Type": string;
   };
-  body: string;
+  body?: string;
 };
 
-const fetchWithAuth = async (url: string, options: Options = {} as Options) => {
-  const token = localStorage.getItem("access_token");
-
+export const fetchWithAuth = async (url: string, options: Options = {} as Options,token:string) => {
   const authOptions = {
     ...options,
     headers: {
