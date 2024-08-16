@@ -19,11 +19,11 @@ const Dashboard = () => {
           />
         </div>
         <div className="flex flex-col flex-1 overflow-hidden">
-          <h1 className="capitalize text-[1.2em] font-bold text-truncate ">{user?.name}</h1>
+          <h1 className="capitalize text-[1.2em] font-bold text-truncate ">{user?.name || "..."}</h1>
           <h2 className="capitalize text-[0.8em]">
-            Tecnologia da Informação 2024.1
+            Tecnologia da Informação 2024.1 
           </h2>
-          <h3 className="capitalize text-[0.8em]">{user?.structure.name}</h3>
+          <h3 className="capitalize text-[0.8em]">{user?.structure.name || "..."}</h3>
         </div>
       </div>
       <div className="flex flex-col gap-3 w-full mt-3">

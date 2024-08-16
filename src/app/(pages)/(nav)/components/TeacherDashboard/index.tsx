@@ -1,36 +1,39 @@
-"use client"
-
 import { TeacherType } from "@/types/teacher";
+import { fetchWithAuth } from "@/utils/fetchWithAuth";
 import { Rating } from "@mui/material";
-import { useEffect, useState } from "react";
+import { cookies } from "next/headers";
 
-const TeacherDashboard = () => {
-  const [teacher,setTeachers]=useState<TeacherType[]>([]);
-
-  useEffect(() => {
-    const getTeachers = async () => {
-      const response = await fetch("http://localhost:3000/api/teachers", {
+const getTeachers = async () => {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("access_token")?.value;
+  if (accessToken) {
+    const response = await fetchWithAuth(
+      "http://localhost:8080/teacher",
+      {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
-      });
-      if (!response.ok) {
-        return;
-      }
-      const data:TeacherType[] = await response.json();
-      setTeachers(data.sort((a,b)=>b.rating-a.rating));
-    };
-    getTeachers();
-  },[])
+      },
+      accessToken
+    );
+    if (!response.ok) {
+      return;
+    }
+    const data: TeacherType[] = await response.json();
+    return data.sort((a, b) => b.rating - a.rating);
+  }
+};
+
+const TeacherDashboard = async () => {
+  const teachers: TeacherType[] | undefined = await getTeachers();
 
   return (
     <div className="bg-[#ffffffd6] flex flex-col rounded-xl items-center px-10 pt-2 pb-4 h-[40%] gap-2">
       <h1 className="text-[2em]">TOP DOCENTES</h1>
       <div className="overflow-y-scroll w-full">
-        {teacher.map((teacher) => (
-          <Teacher teacher={teacher} />
+        {teachers?.map((teacher) => (
+          <Teacher teacher={teacher} key={teacher.id} />
         ))}
       </div>
     </div>
@@ -39,12 +42,19 @@ const TeacherDashboard = () => {
 
 export default TeacherDashboard;
 
-const Teacher = ({teacher}:{teacher:TeacherType}) => {
-
-  return(
+const Teacher = ({ teacher }: { teacher: TeacherType }) => {
+  return (
     <div className="flex gap-2 h-[20%]">
-      <span className="md:text-sm 2xl:text-[1.5em] truncate">{teacher.name}</span>
-      <Rating name="rating" value={teacher.rating} readOnly precision={0.5} size="medium"  />
+      <span className="md:text-sm 2xl:text-[1.5em] truncate w-1/2">
+        {teacher.name}
+      </span>
+      <Rating
+        name="rating"
+        value={teacher.rating}
+        readOnly
+        precision={0.5}
+        size="medium"
+      />
     </div>
-  )
+  );
 };
