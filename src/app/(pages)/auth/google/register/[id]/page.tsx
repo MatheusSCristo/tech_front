@@ -92,7 +92,6 @@ const Register = ({ params }: { params: { id: string } }) => {
       return;
     }
     const result: UserType = await response.json();
-    console.log(result);
     setUser(result);
     setTimeout(() => router.push("/"), 1000);
   };

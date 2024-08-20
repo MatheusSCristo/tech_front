@@ -53,7 +53,6 @@ export const authOptions: NextAuthOptions = {
           } else if (response.status == 500) {
             throw new Error("Erro ao conectar com o servidor");
           }
-          return true;
         } catch (error) {
           console.error("Erro ao obter o JWT do backend:", error);
         }

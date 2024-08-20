@@ -11,7 +11,7 @@ import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
 
@@ -19,6 +19,7 @@ const Login = () => {
   const { setUser } = useContext(UserContext);
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const { data } = useSession();
 
   const {
     register,
@@ -50,20 +51,42 @@ const Login = () => {
     setTimeout(() => router.push("/"), 1000);
   };
 
-  //GOOGLE LOGIN TO-DO
-
   const googleLogin = async () => {
     try {
-      const response = await signIn("google", { redirect: false });
-      if (response) {
-        const user = useSession();
-        console.log(user);
-        // setTimeout(() => router.push("/"), 1000);
-      }
+      await signIn("google", { redirect: false });
     } catch (error) {
       setError("Erro ao conectar com o servidor");
     }
   };
+
+  useEffect(() => {
+    const googleLogin = async () => {
+      try {
+        const response = await fetch("/api/google/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          setError(
+            response.status == 500
+              ? "Erro ao conectar com o servidor"
+              : "Erro na validação das credenciais, tente novamente."
+          );
+          return;
+        }
+        const result: UserType = await response.json();
+        setUser(result);
+        setTimeout(() => router.push("/"), 1000);
+      } catch (error) {
+        setError("Erro ao conectar com o servidor");
+      }
+    };
+    if (data) {
+      googleLogin();
+    }
+  }, [data]);
 
   return (
     <section className="w-full h-screen flex flex-col xl:flex-row gap-0">
