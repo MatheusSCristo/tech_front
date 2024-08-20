@@ -1,12 +1,21 @@
-import NextAuth from "next-auth";
+import CryptoJS from 'crypto-js';
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-export default NextAuth({
+const encrypt = (text: string) => {
+  const key=process.env.ENCRYPTION_KEY;
+  if(!key){
+    return '';
+  }
+  const encrypted= CryptoJS.AES.encrypt(text,key).toString();
+  return encrypted;
+};
+
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId:
-        "",
-      clientSecret: "",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
   callbacks: {
@@ -24,20 +33,34 @@ export default NextAuth({
     async signIn({ user, account, profile }) {
       if (account?.provider === "google") {
         try {
-          const response = await fetch("http://localhost:8080/auth/google", {
-            method: "POST",
-            headers:{
-              "Content-Type":"application/json",
-            },
-            body:JSON.stringify({access_token: account.access_token}),
-          });
-          const data = await response.json();
-          console.log(data);
+          const token = account.id_token;
+          const response = await fetch(
+            `http://localhost:8080/auth/google/${token}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (response.status === 401) {
+            const email = user.email;
+            if (!email) {
+              return false;
+            }
+            const encryptedEmail = encrypt(email);
+            return `/auth/google/register/${encodeURIComponent(encryptedEmail)}`;
+          } else if (response.status == 500) {
+            throw new Error("Erro ao conectar com o servidor");
+          }
+          return true;
         } catch (error) {
           console.error("Erro ao obter o JWT do backend:", error);
         }
       }
       return true;
     },
-  },  
-});
+  },
+};
+
+export default NextAuth(authOptions);

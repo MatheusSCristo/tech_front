@@ -7,7 +7,7 @@ import {
 } from "@/schemas/loginRequestSchema";
 import { UserType } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -51,6 +51,19 @@ const Login = () => {
   };
 
   //GOOGLE LOGIN TO-DO
+
+  const googleLogin = async () => {
+    try {
+      const response = await signIn("google", { redirect: false });
+      if (response) {
+        const user = useSession();
+        console.log(user);
+        // setTimeout(() => router.push("/"), 1000);
+      }
+    } catch (error) {
+      setError("Erro ao conectar com o servidor");
+    }
+  };
 
   return (
     <section className="w-full h-screen flex flex-col xl:flex-row gap-0">
@@ -108,7 +121,7 @@ const Login = () => {
             </button>
           </form>
           <button
-            onClick={() => signIn("google")}
+            onClick={() => googleLogin()}
             className="flex items-center gap-4 mt-3 w-fit bg-white text-[1em] rounded p-2 hover:scale-[1.05] duration-300 hover:bg-[#f1f1f1]"
           >
             <div className="relative w-[25px] h-[25px]">
