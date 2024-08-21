@@ -21,6 +21,7 @@ export async function middleware(req: NextRequest) {
     }
 
     if (response.status === 200 && req.url.includes("/auth")) {
+      console.log("redirecting to /");
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
