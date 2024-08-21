@@ -48,7 +48,7 @@ const Login = () => {
     }
     const result: UserType = await response.json();
     setUser(result);
-    setTimeout(() => router.push("/"), 1000);
+    router.push("/");
   };
 
   const googleLogin = async () => {
@@ -76,15 +76,14 @@ const Login = () => {
           );
           return;
         }
+        router.push("/");
         const result: UserType = await response.json();
         setUser(result);
-        setTimeout(() => router.push("/"), 1000);
       } catch (error) {
         setError("Erro ao conectar com o servidor");
       }
     };
     if (data) {
-      console.log(data);
       googleLogin();
     }
   }, [data]);
