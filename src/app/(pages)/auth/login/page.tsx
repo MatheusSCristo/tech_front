@@ -63,7 +63,7 @@ const Login = () => {
     const googleLogin = async () => {
       try {
         const response = await fetch("/api/google/login", {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
@@ -84,6 +84,7 @@ const Login = () => {
       }
     };
     if (data) {
+      console.log(data);
       googleLogin();
     }
   }, [data]);

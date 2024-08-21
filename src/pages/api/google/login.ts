@@ -11,7 +11,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === "POST") {
+  if (req.method === "GET") {
     try {
       const session = await getServerSession(req, res, authOptions);
       const email = session?.user?.email;

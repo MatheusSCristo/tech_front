@@ -27,6 +27,9 @@ export async function middleware(req: NextRequest,res: NextResponse) {
     } catch (error) {
       const response= NextResponse.redirect(new URL("/auth/login", req.url));
       response.cookies.delete("access_token");
+      response.cookies.delete("next-auth.session-token");
+      response.cookies.delete("next-auth.csrf-token");
+      response.cookies.delete("next-auth.callback-url");
       return response;
     }
   }
