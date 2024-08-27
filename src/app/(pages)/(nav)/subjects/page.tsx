@@ -84,16 +84,16 @@ const Subjects = () => {
         <h1 className="text-[3em] leading-none">Matérias</h1>
         <div className="bg-white w-full p-2 rounded-md flex justify-between">
           <SearchBar searched={searched} setSearched={setSearched} />
-          <Filter />
+          <Filter setFilter={setFilter} filter={filter}/>
         </div>
         <div className="w-full flex-1 overflow-x-hidden overflow-y-scroll  ">
           {showSubjects && <Table subjects={showSubjects} user={user} />}
-          {showSubjects.length==0 && !searched && (
+          {showSubjects.length==0 && !searched && !filter && (
             <div  className="w-full h-full flex items-center justify-center">
               <CircularProgress />
             </div>
           )}
-          {showSubjects.length==0 && searched && (
+          {showSubjects.length==0 && (searched || filter!==0) && (
             <div  className="w-full h-full flex items-center justify-center">
               <span>Nenhum resultado encontrado...</span>
             </div>
