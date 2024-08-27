@@ -22,7 +22,7 @@ const Filter = ({
 }) => {
   const [showFilter, setShowFilter] = useState(false);
   return (
-    <div className="relative w-fit bg-white w-[100px]  flex items-center">
+    <div className="relative bg-white w-[100px] flex items-center">
       <div
         className="gap-1 flex items-center hover:scale-[1.1] duration-300 cursor-pointer relative w-full"
       >
@@ -50,7 +50,7 @@ const Filter = ({
               key={key}
               onClick={() => setFilter(Number(key))}
               className={`hover:bg-[#d7d7d7] w-full ${
-                filter === Number(key) && "bg-[#d7d7d7]"
+                filter === Number(key) && "bg-[#ebebeb]"
               }`}
             >
               {FilterOptions[parseInt(key)]}

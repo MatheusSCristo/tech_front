@@ -7,14 +7,6 @@ import Filter from "./components/Filter";
 import SearchBar from "./components/SearchBar";
 import Table from "./components/Table";
 
-const FilterOptions = {
-  0: "Todos",
-  1: "Obrigatórias",
-  2: "Optativas",
-  3: "30h",
-  4: "60h",
-  5: "90h",
-};
 
 const Subjects = () => {
   const { user } = useContext(UserContext);
@@ -23,6 +15,7 @@ const Subjects = () => {
   const [searched, setSearched] = useState<string>("");
   const [filter, setFilter] = useState<Number>(0);
 
+ 
   useEffect(() => {
     const getSubjects = async () => {
       const response = await fetch("/api/getSubjects", {
@@ -42,6 +35,8 @@ const Subjects = () => {
   }, []);
 
   const filterSubjects = (subjects: SubjectType[]) => {
+  const mandatorySubjects=user?.structure.mandatory_subjects.map((subject)=>subject.id);
+
     return subjects.filter((subject) => {
       const nameMatches = subject.name
         .toLowerCase()
@@ -57,11 +52,11 @@ const Subjects = () => {
       switch (filter) {
         case 1:
           return (
-            nameMatches && user?.structure.mandatory_subjects.includes(subject)
+            nameMatches && mandatorySubjects?.includes(subject.id)
           );
         case 2:
           return (
-            nameMatches && user?.structure.optional_subjects.includes(subject)
+            nameMatches && !mandatorySubjects?.includes(subject.id)
           );
         case 3:
           return nameMatches && subject.ch === 30;
