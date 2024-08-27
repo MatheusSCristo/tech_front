@@ -26,7 +26,7 @@ const Table = ({ subjects,user }: { subjects: SubjectType[],user:UserType | null
               <td className="text-[#575757] text-center">{mandatorySubjects?.includes(subject.id)?"Obrigátoria":"Optativa"}</td>
               <td className="text-center text-[#575757]">{subject.ch}h</td>
               <td className="text-[#575757] truncate max-w-[100px] overflow-hidden text-ellipsis">
-                {subject.description}
+                {subject.description || "Descrição não cadastrada."}
               </td>
             </tr>
           ))}
