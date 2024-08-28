@@ -25,13 +25,13 @@ const Filter = ({
     <div className="relative bg-white w-[100px] flex items-center">
       <div
         className="gap-1 flex items-center hover:scale-[1.1] duration-300 cursor-pointer relative w-full"
+        onClick={() => setShowFilter(true)}
       >
         <FaFilter />
         <span>Filtros</span>
         <BiChevronDown
               size={20}
               className="absolute right-0 cursor-pointer"
-              onClick={() => setShowFilter(true)}
             />
       </div>
       {showFilter && (

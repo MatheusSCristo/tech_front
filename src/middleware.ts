@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest,res: NextResponse) {
-  const publicPaths = ["/_next", "/favicon.ico", "/static"];
-  if (publicPaths.some((path) => req.url.startsWith(path))) {
+  
+  const publicPaths = ["/_next", "/favicon.ico", "/static","/images"];
+  if (publicPaths.some((path) => req.url.includes(path))) {
     return NextResponse.next();
   }
   const token = req.cookies.get("access_token");
@@ -36,5 +37,5 @@ export async function middleware(req: NextRequest,res: NextResponse) {
 }
 
 export const config = {
-  matcher: ["/", "/auth/:path*"],
+  matcher: ['/((?!_next/static|api|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.css$).*)', "/auth/:path*"],
 };
