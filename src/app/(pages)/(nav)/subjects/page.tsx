@@ -70,7 +70,7 @@ const Subjects = () => {
     });
   };
   useEffect(() => {
-    setShowSubjects(filterSubjects(subjects));
+    setShowSubjects(filterSubjects(subjects).sort((a,b)=>a.name.localeCompare(b.name)));
   }, [filter, searched, subjects]);
 
   return (
