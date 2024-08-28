@@ -17,6 +17,7 @@ export async function middleware(req: NextRequest,res: NextResponse) {
       const response = await fetch(`http://localhost:8080/auth/validate/${token.value}`);
 
       if (response.status !== 200 && !req.url.includes("/auth")) {
+          console.log("redirected")
         return NextResponse.redirect(new URL("/auth/login", req.url));
       }
 

@@ -7,6 +7,7 @@ import {
 } from "@/schemas/loginRequestSchema";
 import { UserType } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CircularProgress } from "@mui/material";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,6 +20,7 @@ const Login = () => {
   const { setUser } = useContext(UserContext);
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const { data } = useSession();
 
   const {
@@ -31,27 +33,34 @@ const Login = () => {
 
   const onSubmit = async (data: LoginRequestType) => {
     setError(null);
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      setError(
-        response.status == 500
-          ? "Erro ao conectar com o servidor"
-          : "Erro na validação das credenciais, tente novamente."
-      );
-      return;
+    setLoading(true);
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        setError(
+          response.status == 500
+            ? "Erro ao conectar com o servidor"
+            : "Erro na validação das credenciais, tente novamente."
+        );
+        return;
+      }
+      const result: UserType = await response.json();
+      setUser(result);
+      router.push("/");
+    } catch (error) {
+      setError("Erro ao conectar com o servidor");
+    } finally {
+      setLoading(false);
     }
-    const result: UserType = await response.json();
-    setUser(result);
-    router.push("/");
   };
 
-  const googleLogin = async () => {
+  const googleNextLogin = async () => {
     try {
       await signIn("google", { redirect: false });
     } catch (error) {
@@ -61,6 +70,7 @@ const Login = () => {
 
   useEffect(() => {
     const googleLogin = async () => {
+      setLoading(true);
       try {
         const response = await fetch("/api/google/login", {
           method: "GET",
@@ -68,6 +78,7 @@ const Login = () => {
             "Content-Type": "application/json",
           },
         });
+        router.push("/");
         if (!response.ok) {
           setError(
             response.status == 500
@@ -76,11 +87,12 @@ const Login = () => {
           );
           return;
         }
-        router.push("/");
         const result: UserType = await response.json();
         setUser(result);
       } catch (error) {
         setError("Erro ao conectar com o servidor");
+      } finally {
+        setLoading(false);
       }
     };
     if (data) {
@@ -90,6 +102,11 @@ const Login = () => {
 
   return (
     <section className="w-full h-screen flex flex-col xl:flex-row gap-0">
+      {loading && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <CircularProgress size={30} />
+        </div>
+      )}
       <div className="hidden xl:block w-1/2 h-full relative">
         <Image
           src="/images/bg/login_bg_image.svg"
@@ -144,7 +161,7 @@ const Login = () => {
             </button>
           </form>
           <button
-            onClick={() => googleLogin()}
+            onClick={() => googleNextLogin()}
             className="flex items-center gap-4 mt-3 w-fit bg-white text-[1em] rounded p-2 hover:scale-[1.05] duration-300 hover:bg-[#f1f1f1]"
           >
             <div className="relative w-[25px] h-[25px]">
