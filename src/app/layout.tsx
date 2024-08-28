@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ContextProvider>
-        <body className={` ${sansita.className} h-screen`}>{children}</body>
+        <body className={` ${sansita.className} h-screen bg-blueGradiant`}>{children}</body>
       </ContextProvider>
     </html>
   );

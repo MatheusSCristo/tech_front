@@ -8,9 +8,8 @@ import { useContext, useEffect, useState } from "react";
 const Dashboard = () => {
   const { user } = useContext(UserContext);
   const [subjects, setSubjects] = useState<SubjectType[]>([]);
-  const mandatorySubjectsFinished = user?.semesters.map((semester) =>
-    semester.semester_subjects.filter((subject) => subject.finished)
-  );
+  const mandatorySubjectsFinished = user?.semesters.flatMap((semester) =>semester.subjects).filter((subject)=>subject.finished);
+
 
   useEffect(() => {
     const getSubjects = async () => {
@@ -64,8 +63,8 @@ const Dashboard = () => {
             <LinearProgress
               variant="determinate"
               value={
-                mandatorySubjectsFinished?.length || 0/
-                user?.structure.mandatory_subjects.length
+                mandatorySubjectsFinished?.length ||
+                0 / user?.structure.mandatory_subjects.length
               }
             />
           </div>
@@ -80,8 +79,8 @@ const Dashboard = () => {
             <LinearProgress
               variant="determinate"
               value={
-                mandatorySubjectsFinished?.length || 0/
-                user?.structure.mandatory_subjects.length
+                mandatorySubjectsFinished?.length ||
+                0 / user?.structure.mandatory_subjects.length
               }
             />
           </div>

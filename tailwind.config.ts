@@ -14,6 +14,7 @@ const config: Config = {
       colors: {
         blue: "#004E96",
         lightBlue: "#207FD7",
+        mandatoryBlue:"#64A5E1"
       },
     },
   },
