@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { cookies } from 'next/headers';
 
 
 type Data={
@@ -34,7 +33,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const data: Data = await response.json();
-      cookies().set("access_token", data.access_token);
+      res.setHeader(
+        "Set-Cookie",
+        `access_token=${data.access_token}; HttpOnly; Path=/; Max-Age=${
+          60 * 60 * 24
+        }; ${process.env.NODE_ENV === "production" ? "Secure;" : ""}`
+      );
       res.status(200).json(data.user_data);
     } catch (error:any) {
       res.status(400).json({ error: error.message });
