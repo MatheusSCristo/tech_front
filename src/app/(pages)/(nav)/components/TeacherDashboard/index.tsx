@@ -44,7 +44,7 @@ export default TeacherDashboard;
 
 const Teacher = ({ teacher }: { teacher: TeacherType }) => {
   return (
-    <div className="flex gap-2 h-[20%]">
+    <div className="flex gap-2 h-[20%] xl:h-[15%]">
       <span className="md:text-sm 2xl:text-[1.5em] truncate w-1/2">
         {teacher.name}
       </span>

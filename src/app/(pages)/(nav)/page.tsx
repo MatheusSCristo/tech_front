@@ -5,8 +5,8 @@ import Loading from "./components/TeacherDashboard/loading";
 
 const Home = () => {
   return (
-    <section className="w-full h-screen bg-blueGradiant p-10">
-      <div className="w-[30%] flex flex-col justify-evenly h-full">
+    <section className="w-full h-full bg-blueGradiant ">
+      <div className="w-[30%] flex flex-col justify-evenly h-full p-5">
         <Dashboard />
         <Suspense fallback={<Loading/>}>
           <TeacherDashboard />
