@@ -53,8 +53,8 @@ const textInputs = [
 
 const Register = () => {
   const { setUser } = useContext(UserContext);
-  const [error, setError] = useState<String | null >(null);
-  const router=useRouter();
+  const [error, setError] = useState<String | null>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -64,27 +64,28 @@ const Register = () => {
     resolver: zodResolver(registerRequestSchema),
   });
 
-
-
   const onSubmit = async (data: RegisterRequestType) => {
-    setError(null)
-    const response = await fetch("/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    setError(null);
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-    if (!response.ok) {
-      const data = await response.json();
-      setError(data.error.message);
-      return;
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.error.message);
+        return;
+      }
+      router.push("/");
+      const result: UserType = await response.json();
+      setUser(result);
+    } catch (e) {
+      setError("Erro ao se conectar como o servidor");
     }
-    const result: UserType = await response.json();
-    setUser(result);
-    setTimeout(()=>router.push('/'),1000) 
-    
   };
 
   return (
@@ -146,7 +147,9 @@ const Register = () => {
                 )}
               </div>
             </div>
-          {error && <span className="text-[#ff6d6d] text-center">{error}</span>}
+            {error && (
+              <span className="text-[#ff6d6d] text-center">{error}</span>
+            )}
           </div>
           <button
             type="submit"
