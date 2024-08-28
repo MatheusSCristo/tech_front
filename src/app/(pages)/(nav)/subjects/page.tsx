@@ -26,7 +26,7 @@ const Subjects = () => {
         credentials: "include",
       });
       if (!response.ok) {
-        return;
+        setSubjects([]);
       }
       const data: SubjectType[] = await response.json();
       setSubjects(data);
@@ -47,7 +47,7 @@ const Subjects = () => {
             .toLowerCase()
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
-        );
+        ) || subject.id.toLowerCase().includes(searched.toLowerCase());
 
       switch (filter) {
         case 1:
