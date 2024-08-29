@@ -15,9 +15,12 @@ const Semesters = () => {
   const [semesters, setSemesters] = useState<SemesterUserType[]>([]);
   const subjects = semesters?.flatMap((item) => item.subjects);
 
+  //BUG DO NADA SOME VARIOS SEMESTRES
+
   useEffect(() => {
     if (user) {
       setSemesters(user.semesters.sort((a, b) => a.semester - b.semester));
+      //FETCH SEMESTERS FOR REAL-TIME-UPDATES
     }
   }, [user]);
   const handleOnDragEnd = (result: DropResult) => {
@@ -54,7 +57,9 @@ const Semesters = () => {
       ...updatedSemester[droppedSemester],
       subjects: addedSubjectToDroppedSemester,
     };
-    if(!handleDragValidations(semesters[droppedSemester], subject.subject)) return;
+
+    if (!handleDragValidations(semesters[droppedSemester], subject.subject))
+      return;
     setSemesters(updatedSemester);
   };
 
@@ -62,23 +67,26 @@ const Semesters = () => {
     semester: SemesterUserType,
     subject: SubjectType
   ) => {
-    const { pre_requisites: preRequisites,co_requisites:coRequisites } = subject;
-    if(preRequisites.length==0 && coRequisites.length==0) return true;
-    const pastSemesters = semesters.splice(0, semester.semester -2);
-
-    const preRequisitesPaid = preRequisites.every((preRequisite) => 
-       pastSemesters.some((item,index) => 
-        item.subjects.some((subject) => 
-          preRequisite.id === subject.subject.id
-        )
-      )
+    const { pre_requisites: preRequisites, co_requisites: coRequisites } =
+      subject;
+    if (preRequisites.length == 0 && coRequisites.length == 0) return true;
+    const pastSemesters = semesters.filter(
+      (item) => item.semester < semester.semester
     );
+    const preRequisitesPaid = preRequisites.every((preRequisite) => {
+      return pastSemesters.some((item) => {
+        return item.subjects.some(
+          (subject) => preRequisite.id === subject.subject.id
+        );
+      });
+    });
 
     const coRequisitesPaid = coRequisites.every((coRequisite) => {
-      semester.subjects.some((subject)=> coRequisite.id === subject.subject.id)
-    })
+      semester.subjects.some(
+        (subject) => coRequisite.id === subject.subject.id
+      );
+    });
     return preRequisitesPaid && coRequisitesPaid;
-    
   };
 
   return (
@@ -87,7 +95,7 @@ const Semesters = () => {
       <div className="flex flex-col gap-10 ">
         <DragDropContext onDragEnd={handleOnDragEnd}>
           {semesters?.map((semester, index) => (
-            <Semester semester={semester} index={index} />
+            <Semester semester={semester} index={index} key={semester.id} />
           ))}
         </DragDropContext>
       </div>
@@ -131,7 +139,9 @@ const Semester = ({
                     {...provided.dragHandleProps}
                     className="overflow-hidden bg-mandatoryBlue border border-black h-[200px] w-[10%] flex items-center justify-center rounded p-3"
                   >
-                    <span className="text-center text-wrap truncate">{subject.subject.name}</span>
+                    <span className="text-center text-wrap truncate">
+                      {subject.subject.name}
+                    </span>
                   </div>
                 )}
               </Draggable>
