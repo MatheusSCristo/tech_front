@@ -44,10 +44,7 @@ export default async function handler(
       );
       res.status(response.status).json(data.user_data);
     } catch (error: any) {
-      if (error.cause.code === "ECONNREFUSED") {
-        res.status(500).json({ error: "Erro ao conectar com o servidor" });
-      }
-      res.status(400).json({ error: error.message });
+      res.status(error.code).json({ error: error.message });
     }
   } else {
     res.status(405).json({ error: "Method not allowed" });

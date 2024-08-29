@@ -30,8 +30,8 @@ const getSemestersOptions = () => {
 const structureOptions = [
   { name: "Tecnologia da Informação - Matutino", value: 0 },
   { name: "Tecnologia da Informação - Noturno", value: 1 },
-  { name: "Tecnologia da Informação - Engenharia de Software", value: 2 },
-  { name: "Tecnologia da Informação - Ciências da Computação", value: 3 },
+  { name: "Tecnologia da Informação - Ciências da Computação", value: 2 },
+  { name: "Tecnologia da Informação - Engenharia de Software", value: 3 },
 ];
 
 const textInputs = [

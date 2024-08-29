@@ -31,8 +31,8 @@ const getSemestersOptions = () => {
 const structureOptions = [
   { name: "Tecnologia da Informação - Matutino", value: 0 },
   { name: "Tecnologia da Informação - Noturno", value: 1 },
-  { name: "Tecnologia da Informação - Engenharia de Software", value: 2 },
-  { name: "Tecnologia da Informação - Ciências da Computação", value: 3 },
+  { name: "Tecnologia da Informação - Ciências da Computação", value: 2 },
+  { name: "Tecnologia da Informação - Engenharia de Software", value: 3 },
 ];
 
 const textInputs = [
@@ -93,7 +93,7 @@ const Register = ({ params }: { params: { id: string } }) => {
     }
     const result: UserType = await response.json();
     setUser(result);
-    setTimeout(() => router.push("/"), 1000);
+    router.push("/");
   };
 
   return (
