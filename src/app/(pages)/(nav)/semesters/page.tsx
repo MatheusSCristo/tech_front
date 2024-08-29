@@ -13,16 +13,36 @@ import { useContext, useEffect, useState } from "react";
 const Semesters = () => {
   const { user } = useContext(UserContext);
   const [semesters, setSemesters] = useState<SemesterUserType[]>([]);
+  const [error, setError] = useState(false);
   const subjects = semesters?.flatMap((item) => item.subjects);
 
   //BUG DO NADA SOME VARIOS SEMESTRES
 
   useEffect(() => {
-    if (user) {
-      setSemesters(user.semesters.sort((a, b) => a.semester - b.semester));
-      //FETCH SEMESTERS FOR REAL-TIME-UPDATES
-    }
+    const getSemesters = async () => {
+      if (user) {
+        try {
+          const response = await fetch(`/api/getSemesterUsers?id=${user.id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+          if (!response.ok) {
+            setError(true);
+          }
+          console.log(response)
+          const data:SemesterUserType[] = await response.json();
+          setSemesters(data.sort((a, b) => a.semester - b.semester));
+        } catch (e: any) {
+          setError(true);
+        }
+      }
+    };
+    getSemesters();
   }, [user]);
+
   const handleOnDragEnd = (result: DropResult) => {
     const { draggableId, destination } = result;
     if (!destination || !draggableId) return;
