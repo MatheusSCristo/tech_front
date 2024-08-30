@@ -15,11 +15,12 @@ const ErrorPopUp = ({
   const [time, setTime] = useState(0);
 
   useEffect(() => {
+    if(option) return;
     const interval = setInterval(() => {
       setTime((prev) => prev + 0.100);
     }, 100);
     return () => clearInterval(interval);
-  }, []);
+  }, [,option]);
 
   useEffect(() => {
     if (time >= 3.5 && !option) {
