@@ -1,12 +1,13 @@
 "use client";
 import { UserContext } from "@/app/context/UserContext";
 import { SemesterUserType } from "@/types/semester";
-import { SubjectType } from "@/types/subject";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { CircularProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import ErrorPopUp from "./ErrorPopUp";
 import Semester from "./Semester";
+import { handleDragValidations } from "./utils/handleDragValidations";
+import { handleSwapSubjects } from "./utils/handleSwapSubjects";
 
 const Semesters = () => {
   const { user } = useContext(UserContext);
@@ -14,9 +15,16 @@ const Semesters = () => {
   const [error, setError] = useState(false);
   const subjects = semesters?.flatMap((item) => item.subjects);
   const [openPopUp, setOpenPopUp] = useState(false);
-  const [subjectError, setSubjectError] = useState("");
+  const [subjectError, setSubjectError] = useState({
+    option: false,
+    error: "",
+  });
+  const [responseFunction, setResponseFunction] = useState<() => void>(
+    () => {}
+  );
 
-  //BUG DO NADA SOME VARIOS SEMESTRES
+  //CONCLUIR MATERIA E ESCONDER EM CAS DE APROVEITAMENTO
+  //NAO DEVE SER POSSIVEL MOVER UMA MATERIA PARA DPOIS DE UMA MATERIA Q TEM ELA COMO PRE REQUISITO
 
   useEffect(() => {
     const getSemesters = async () => {
@@ -51,112 +59,33 @@ const Semesters = () => {
     const semesterSubjectDraggedFrom = semesters?.findIndex((item) =>
       item.subjects.some((item) => item.subject.id == draggableId)
     );
+
     if (droppedSemester == semesterSubjectDraggedFrom) {
-      setSubjectError("Você não pode mover uma matéria para o mesmo semestre.");
+      setSubjectError({
+        option: false,
+        error: "Você não pode mover uma matéria para o mesmo semestre.",
+      });
       setOpenPopUp(true);
       return;
     }
     const subject = subjects?.find((item) => item.subject.id == draggableId);
     if (!subject) {
-      setSubjectError("Nenhuma matéria selecionada.");
+      setSubjectError({ option: false, error: "Nenhuma matéria selecionada." });
       setOpenPopUp(true);
       return;
     }
-    const removedSubjectFromDraggedSemester = semesters[
-      semesterSubjectDraggedFrom
-    ].subjects.filter((item) => item != subject);
-
-    const addedSubjectToDroppedSemester = [
-      ...semesters[droppedSemester].subjects,
-      subject,
-    ];
-
-    const updatedSemester = [...semesters];
-
-    updatedSemester[semesterSubjectDraggedFrom] = {
-      ...updatedSemester[semesterSubjectDraggedFrom],
-      subjects: removedSubjectFromDraggedSemester,
-    };
-
-    updatedSemester[droppedSemester] = {
-      ...updatedSemester[droppedSemester],
-      subjects: addedSubjectToDroppedSemester,
-    };
-
-    if (!handleDragValidations(semesters[droppedSemester], subject.subject))
+    if (!handleDragValidations(setSemesters,semesters,semesters[droppedSemester], subject.subject, setSubjectError, setOpenPopUp,setResponseFunction))
       return;
+
+    const updatedSemester = handleSwapSubjects(
+      semesters,
+      subject,
+      destination.droppableId.split("semester-")[1]
+    );
     setSemesters(updatedSemester);
   };
 
-  const handleDragValidations = (
-    semester: SemesterUserType,
-    subject: SubjectType
-  ) => {
-
-    //NAO DEVE SER POSSIVEL MOVER UMA MATERIA PARA DPOIS DE UMA MATERIA Q TEM ELA COMO PRE REQUISITO
-
-
-    const { pre_requisites: preRequisites, co_requisites: coRequisites } =
-      subject;
-
-    const itsPreRequisiteOfSubjectOnSemester = semester.subjects.find(
-      (semesterSubject) =>
-        semesterSubject.subject.pre_requisites.some(
-          (requisite) => requisite.id === subject.id
-        )
-    );
-    if (itsPreRequisiteOfSubjectOnSemester) {
-      setSubjectError(
-        `A matéria não pode ser movida para esse semestre,pois ${itsPreRequisiteOfSubjectOnSemester.subject.name} possui ela como pré-requisito.`
-      );
-      setOpenPopUp(true);
-      return false;
-    }
-
-    if (preRequisites.length == 0 && coRequisites.length == 0) return true;
-    const pastSemesters = semesters.filter(
-      (item) => item.semester < semester.semester
-    );
-    const preRequisitesPaid = preRequisites.filter((preRequisite) => {
-      return pastSemesters.some((item) => {
-        return item.subjects.some(
-          (subject) => preRequisite.id === subject.subject.id
-        );
-      });
-    });
-
-    if(preRequisitesPaid.length!=subject.pre_requisites.length){
-      const preRequisitesNotPaid=subject.pre_requisites.findLast((preRequisite)=>!preRequisitesPaid.some((paid)=>paid.id==preRequisite.id))
-      setSubjectError(
-        `A matéria não pode ser movida para esse semestre,pois ${preRequisitesNotPaid?.name} ainda não foi concluido.`
-      );
-      setOpenPopUp(true);
-      return false;
-
-    }
-
   
-    const coRequisitesPaid = coRequisites.filter((coRequisite) => {
-      semester.subjects.some(
-        (subject) => coRequisite.id === subject.subject.id
-      );
-    });
-
-    if(coRequisitesPaid.length!=subject.co_requisites.length){
-      const coRequisitesNotPaid=subject.co_requisites.findLast((coRequisite)=>!coRequisitesPaid.some((paid)=>paid.id==coRequisite.id))
-      setSubjectError(
-        `A matéria não pode ser movida para esse semestre,pois ${coRequisitesNotPaid?.name} é co-requisito.`
-      );
-      setOpenPopUp(true);
-      return false;
-    }
-
-
-    return (
-      preRequisitesPaid.length==subject.pre_requisites.length &&
-      coRequisitesPaid.length==subject.co_requisites.length 
-    );
-  };
 
   return (
     <>
@@ -179,9 +108,11 @@ const Semesters = () => {
       </div>
       {openPopUp && (
         <ErrorPopUp
-          error={subjectError}
+          responseFunction={responseFunction}
+          error={subjectError.error}
+          option={subjectError.option}
           handleClosePopUp={() => {
-            setSubjectError("");
+            setSubjectError({ option: false, error: "" });
             setOpenPopUp(false);
           }}
         />
