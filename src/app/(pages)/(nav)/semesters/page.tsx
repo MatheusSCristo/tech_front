@@ -23,8 +23,8 @@ const Semesters = () => {
     () => {}
   );
 
+
   //CONCLUIR MATERIA E ESCONDER EM CAS DE APROVEITAMENTO
-  //NAO DEVE SER POSSIVEL MOVER UMA MATERIA PARA DPOIS DE UMA MATERIA Q TEM ELA COMO PRE REQUISITO
 
   useEffect(() => {
     const getSemesters = async () => {
@@ -74,7 +74,17 @@ const Semesters = () => {
       setOpenPopUp(true);
       return;
     }
-    if (!handleDragValidations(setSemesters,semesters,semesters[droppedSemester], subject.subject, setSubjectError, setOpenPopUp,setResponseFunction))
+    if (
+      !handleDragValidations(
+        setSemesters,
+        semesters,
+        semesters[droppedSemester],
+        subject.subject,
+        setSubjectError,
+        setOpenPopUp,
+        setResponseFunction
+      )
+    )
       return;
 
     const updatedSemester = handleSwapSubjects(
@@ -85,8 +95,6 @@ const Semesters = () => {
     setSemesters(updatedSemester);
   };
 
-  
-
   return (
     <>
       <div className="bg-[#ffffffd6] m-10  flex flex-col items-center p-5 rounded-xl gap-10">
@@ -95,7 +103,7 @@ const Semesters = () => {
           {semesters.length > 0 && (
             <DragDropContext onDragEnd={handleOnDragEnd}>
               {semesters?.map((semester, index) => (
-                <Semester semester={semester} index={index} key={semester.id} />
+                <Semester semester={semester} index={index} key={semester.id} setSemesters={setSemesters}/>
               ))}
             </DragDropContext>
           )}
