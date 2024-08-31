@@ -1,13 +1,16 @@
 "use client";
 import { UserContext } from "@/app/context/UserContext";
 import { SemesterUserType } from "@/types/semester";
+import { SemesterSubjectType } from "@/types/semesterSubject";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { CircularProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import ErrorPopUp from "./ErrorPopUp";
 import Semester from "./Semester";
-import { handleDragValidations } from "./utils/handleDragValidations";
 import { handleSwapSubjects } from "./utils/handleSwapSubjects";
+import { checkSubjectItsCoRequisiteOf } from "./utils/validations/checkSubjectItsCoRequisitesOf";
+import { getSubjectCoRequisites } from "./utils/validations/getCoRequisites";
+import { getPrerequisiteDependencies } from "./utils/validations/getPrerequisiteDependencies ";
 import { getSubjectPreRequisitesNotFinished } from "./utils/validations/getSubjectPreRequisitesNotFinished";
 
 const Semesters = () => {
@@ -23,8 +26,6 @@ const Semesters = () => {
   const [responseFunction, setResponseFunction] = useState<() => void>(
     () => {}
   );
-
-  //Esconder materia concluida
 
   useEffect(() => {
     const getSemesters = async () => {
@@ -50,12 +51,55 @@ const Semesters = () => {
     getSemesters();
   }, [user]);
 
+  const checkPreRequisitesNotPaid = (
+    subject: SemesterSubjectType,
+    destinationSemester: SemesterUserType
+  ) => {
+    const preRequisitesNotCompleted = getSubjectPreRequisitesNotFinished(
+      semesters,
+      subject,
+      destinationSemester
+    );
+
+    if (preRequisitesNotCompleted.length > 0) {
+      setSubjectError({
+        option: false,
+        error: `Não é possível mover esta matéria para o semestre desejado, pois ${preRequisitesNotCompleted[0].name} é pré requisto e ainda não foi concluido.`,
+      });
+      setOpenPopUp(true);
+      return false;
+    }
+    return true;
+  };
+
+  const checkPreRequisitesOfSubjectOnDestinationSemester = (
+    subject: SemesterSubjectType,
+    destinationSemester: SemesterUserType
+  ) => {
+    const preRequisitesOfSubjectOnDestinationSemester =
+      getPrerequisiteDependencies(destinationSemester, subject);
+
+    console.log(preRequisitesOfSubjectOnDestinationSemester)
+      
+    if (preRequisitesOfSubjectOnDestinationSemester) {
+      setSubjectError({
+        option: false,
+        error: `Não é possível mover esta matéria para o semestre desejado, pois ${preRequisitesOfSubjectOnDestinationSemester.subject.name} no semestre de destino exige esta como pré-requisito.`,
+      });
+      setOpenPopUp(true);
+      return false;
+    }
+    return true;
+  };
+
   const handleOnDragEnd = (result: DropResult) => {
     const { draggableId, destination } = result;
+
     if (!destination || !draggableId) return;
     const droppedSemester = semesters?.findIndex(
       (item) => item.id == destination.droppableId.split("semester-")[1]
     );
+    const destinationSemester = semesters[droppedSemester];
     const semesterSubjectDraggedFrom = semesters?.findIndex((item) =>
       item.subjects.some((item) => item.subject.id == draggableId)
     );
@@ -69,33 +113,31 @@ const Semesters = () => {
       setOpenPopUp(true);
       return;
     }
-    const preRequisitesNotCompleted = getSubjectPreRequisitesNotFinished(
-      semesters,
+    const canMoveSubject =
+    checkPreRequisitesNotPaid(subject, destinationSemester) &&
+    checkPreRequisitesOfSubjectOnDestinationSemester(
       subject,
-      semesters[droppedSemester]
-    );
-
-    if (preRequisitesNotCompleted.length > 0) {
-      setSubjectError({
-        option: false,
-        error: `Não é possível mover esta matéria para o semestre desejado, pois ${preRequisitesNotCompleted[0].name} em um semestre anterior ou atual exige esta como pré-requisito.`,
-      });
-      setOpenPopUp(true);
-      return false;
-    }
-
-    if (
-      !handleDragValidations(
+      destinationSemester
+    ) &&
+      checkSubjectItsCoRequisiteOf(
         setSemesters,
         semesters,
-        semesters[droppedSemester],
+        destinationSemester,
         subject.subject,
         setSubjectError,
         setOpenPopUp,
         setResponseFunction
-      )
-    )
-      return;
+      ) &&
+      getSubjectCoRequisites(
+        setSemesters,
+        semesters,
+        destinationSemester,
+        subject.subject,
+        setSubjectError,
+        setOpenPopUp,
+        setResponseFunction);
+
+    if (!canMoveSubject) return;
 
     const updatedSemester = handleSwapSubjects(
       semesters,
