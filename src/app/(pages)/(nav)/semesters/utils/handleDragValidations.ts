@@ -41,57 +41,57 @@ export const handleDragValidations = (
   const { pre_requisites: preRequisites, co_requisites: coRequisites } =
     subject;
 
-  const preRequisitesBeforeSemester =
-    checkIfTheresAnyPreRequisitesBeforeSemester(semesters, semester, subject);
-  if (preRequisitesBeforeSemester.length > 0) {
-    const subjectThatHasPreRequisite =
-      preRequisitesBeforeSemester[0].subjects.filter((semesterSubject) =>
-        semesterSubject.subject.pre_requisites.some(
-          (preRequisite) => preRequisite.id === subject.id
-        )
-      );
-    setSubjectError({
-      option: false,
-      error: `Não é possível mover esta matéria para o semestre desejado, pois ${subjectThatHasPreRequisite[0].subject.name} em um semestre anterior exige esta como pré-requisito.`,
-    });
-    setOpenPopUp(true);
-    return false;
-  }
+  // const preRequisitesBeforeSemester =
+  //   checkIfTheresAnyPreRequisitesBeforeSemester(semesters, semester, subject);
+  // if (preRequisitesBeforeSemester.length > 0) {
+  //   const subjectThatHasPreRequisite =
+  //     preRequisitesBeforeSemester[0].subjects.filter((semesterSubject) =>
+  //       semesterSubject.subject.pre_requisites.some(
+  //         (preRequisite) => preRequisite.id === subject.id
+  //       )
+  //     );
+  //   setSubjectError({
+  //     option: false,
+  //     error: `Não é possível mover esta matéria para o semestre desejado, pois ${subjectThatHasPreRequisite[0].subject.name} em um semestre anterior exige esta como pré-requisito.`,
+  //   });
+  //   setOpenPopUp(true);
+  //   return false;
+  // }
 
-  const itsPreRequisiteOfSubjectOnSemester = semester.subjects.find(
-    (semesterSubject) =>
-      semesterSubject.subject.pre_requisites.some(
-        (requisite) => requisite.id === subject.id
-      )
-  );
-  if (itsPreRequisiteOfSubjectOnSemester) {
-    setSubjectError({
-      option: false,
-      error: `Não é possível mover esta matéria para o semestre desejado,pois ${itsPreRequisiteOfSubjectOnSemester.subject.name} possui ela como pré-requisito.`,
-    });
-    setOpenPopUp(true);
-    return false;
-  }
+  // const itsPreRequisiteOfSubjectOnSemester = semester.subjects.find(
+  //   (semesterSubject) =>
+  //     semesterSubject.subject.pre_requisites.some(
+  //       (requisite) => requisite.id === subject.id
+  //     )
+  // );
+  // if (itsPreRequisiteOfSubjectOnSemester) {
+  //   setSubjectError({
+  //     option: false,
+  //     error: `Não é possível mover esta matéria para o semestre desejado,pois ${itsPreRequisiteOfSubjectOnSemester.subject.name} possui ela como pré-requisito.`,
+  //   });
+  //   setOpenPopUp(true);
+  //   return false;
+  // }
 
   if (preRequisites.length == 0 && coRequisites.length == 0) return true;
   const pastSemesters = semesters.filter(
     (item) => item.semester < semester.semester
   );
 
-  const preRequisitesPaid = getPrerequisitesPaid(preRequisites, pastSemesters);
+  // const preRequisitesPaid = getPrerequisitesPaid(preRequisites, pastSemesters);
 
-  if (preRequisitesPaid.length != subject.pre_requisites.length) {
-    const preRequisitesNotPaid = subject.pre_requisites.findLast(
-      (preRequisite) =>
-        !preRequisitesPaid.some((paid) => paid.id == preRequisite.id)
-    );
-    setSubjectError({
-      option: false,
-      error: `Não é possível mover esta matéria para o semestre desejado,pois ${preRequisitesNotPaid?.name} ainda não foi concluido.`,
-    });
-    setOpenPopUp(true);
-    return false;
-  }
+  // if (preRequisitesPaid.length != subject.pre_requisites.length) {
+  //   const preRequisitesNotPaid = subject.pre_requisites.findLast(
+  //     (preRequisite) =>
+  //       !preRequisitesPaid.some((paid) => paid.id == preRequisite.id)
+  //   );
+  //   setSubjectError({
+  //     option: false,
+  //     error: `Não é possível mover esta matéria para o semestre desejado,pois ${preRequisitesNotPaid?.name} ainda não foi concluido.`,
+  //   });
+  //   setOpenPopUp(true);
+  //   return false;
+  // }
 
   const coRequisitesPaid = coRequisites.filter((coRequisite) => {
     semester.subjects.some((subject) => coRequisite.id === subject.subject.id);
@@ -181,7 +181,6 @@ export const handleDragValidations = (
           }
           setOpenPopUp(false);
         }
-        
       };
       setResponseFunction(() => responseFunction);
       setOpenPopUp(true);
@@ -231,7 +230,6 @@ export const handleDragValidations = (
   }
 
   return (
-    preRequisitesPaid.length == subject.pre_requisites.length &&
     coRequisitesPaid.length == subject.co_requisites.length
   );
 };

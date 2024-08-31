@@ -8,6 +8,7 @@ import ErrorPopUp from "./ErrorPopUp";
 import Semester from "./Semester";
 import { handleDragValidations } from "./utils/handleDragValidations";
 import { handleSwapSubjects } from "./utils/handleSwapSubjects";
+import { getSubjectPreRequisitesNotFinished } from "./utils/validations/getSubjectPreRequisitesNotFinished";
 
 const Semesters = () => {
   const { user } = useContext(UserContext);
@@ -23,8 +24,7 @@ const Semesters = () => {
     () => {}
   );
 
-
-  //CONCLUIR MATERIA E ESCONDER EM CAS DE APROVEITAMENTO
+  //Esconder materia concluida
 
   useEffect(() => {
     const getSemesters = async () => {
@@ -61,11 +61,6 @@ const Semesters = () => {
     );
 
     if (droppedSemester == semesterSubjectDraggedFrom) {
-      setSubjectError({
-        option: false,
-        error: "Você não pode mover uma matéria para o mesmo semestre.",
-      });
-      setOpenPopUp(true);
       return;
     }
     const subject = subjects?.find((item) => item.subject.id == draggableId);
@@ -74,6 +69,21 @@ const Semesters = () => {
       setOpenPopUp(true);
       return;
     }
+    const preRequisitesNotCompleted = getSubjectPreRequisitesNotFinished(
+      semesters,
+      subject,
+      semesters[droppedSemester]
+    );
+
+    if (preRequisitesNotCompleted.length > 0) {
+      setSubjectError({
+        option: false,
+        error: `Não é possível mover esta matéria para o semestre desejado, pois ${preRequisitesNotCompleted[0].name} em um semestre anterior ou atual exige esta como pré-requisito.`,
+      });
+      setOpenPopUp(true);
+      return false;
+    }
+
     if (
       !handleDragValidations(
         setSemesters,
@@ -103,7 +113,12 @@ const Semesters = () => {
           {semesters.length > 0 && (
             <DragDropContext onDragEnd={handleOnDragEnd}>
               {semesters?.map((semester, index) => (
-                <Semester semester={semester} index={index} key={semester.id} setSemesters={setSemesters}/>
+                <Semester
+                  semester={semester}
+                  index={index}
+                  key={semester.id}
+                  setSemesters={setSemesters}
+                />
               ))}
             </DragDropContext>
           )}
