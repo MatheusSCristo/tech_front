@@ -20,7 +20,7 @@ const Semesters = () => {
   const subjects = semesters?.flatMap((item) => item.subjects);
   const [openPopUp, setOpenPopUp] = useState(false);
   const [subjectError, setSubjectError] = useState({
-    option: false,
+    option: "",
     error: "",
   });
   const [responseFunction, setResponseFunction] = useState<() => void>(
@@ -63,7 +63,7 @@ const Semesters = () => {
 
     if (preRequisitesNotCompleted.length > 0) {
       setSubjectError({
-        option: false,
+        option: "",
         error: `Não é possível mover esta matéria para o semestre desejado, pois ${preRequisitesNotCompleted[0].name} é pré requisto e ainda não foi concluido.`,
       });
       setOpenPopUp(true);
@@ -81,7 +81,7 @@ const Semesters = () => {
 
     if (preRequisitesOfSubjectOnDestinationSemester) {
       setSubjectError({
-        option: false,
+        option: "",
         error: `Não é possível mover esta matéria para o semestre desejado, pois ${preRequisitesOfSubjectOnDestinationSemester.subject.name} no semestre de destino exige esta como pré-requisito.`,
       });
       setOpenPopUp(true);
@@ -107,7 +107,7 @@ const Semesters = () => {
     }
     const subject = subjects?.find((item) => item.subject.id == draggableId);
     if (!subject) {
-      setSubjectError({ option: false, error: "Nenhuma matéria selecionada." });
+      setSubjectError({ option: "", error: "Nenhuma matéria selecionada." });
       setOpenPopUp(true);
       return;
     }
@@ -176,7 +176,7 @@ const Semesters = () => {
           error={subjectError.error}
           option={subjectError.option}
           handleClosePopUp={() => {
-            setSubjectError({ option: false, error: "" });
+            setSubjectError({ option: "", error: "" });
             setOpenPopUp(false);
           }}
         />

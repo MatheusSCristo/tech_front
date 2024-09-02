@@ -9,7 +9,7 @@ const ErrorPopUp = ({
 }: {
   error: string;
   handleClosePopUp: () => void;
-  option?: boolean;
+  option?: string;
   responseFunction?: () => void;
 }) => {
   const [time, setTime] = useState(0);
@@ -31,6 +31,8 @@ const ErrorPopUp = ({
 
   const progress=(time/3)*100;
 
+  console.log("called")
+  
   return (
     <div className="gap-3 flex flex-col items-center p-3 z-10 fixed bottom-5 right-5 min-w-[20%] max-w-[30%] bg-white rounded-md border border-black shadow-xl ">
       <div className="flex flex-col">
@@ -40,7 +42,7 @@ const ErrorPopUp = ({
       <p className="text-wrap text-center">{error}</p>
       {option && responseFunction && (
         <div className="flex flex-col items-center">
-          <h2>Deseja mover os co-requisitos também?</h2>
+          <h2 className="text-center">{option}</h2>
           <div className="flex gap-2">
             <button
               className="bg-green-500 text-white px-2 py-1 rounded-sm"

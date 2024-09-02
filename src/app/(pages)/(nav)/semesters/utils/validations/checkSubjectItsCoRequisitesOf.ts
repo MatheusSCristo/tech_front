@@ -5,7 +5,7 @@ import { checkIfSubjectIsCoRequisite } from "../checkIfSubjectIsCoRequisite";
 import { handleSwapSubjects } from "../handleSwapSubjects";
 
 type SubjectErrorType = {
-  option: boolean;
+  option: string;
   error: string;
 };
 
@@ -30,7 +30,7 @@ export const checkSubjectItsCoRequisiteOf = (
 
   if (subjectsItsCoRequisitesOf.length > 0) {
     setSubjectError({
-      option: true,
+      option: "Deseja mover as matérias que a tem co requisito também?",
       error: `A matéria não pode ser movida ,pois ${subjectsItsCoRequisitesOf[0].subject.name} possui ela como co-requisito.`,
     });
     const responseFunction = () => {

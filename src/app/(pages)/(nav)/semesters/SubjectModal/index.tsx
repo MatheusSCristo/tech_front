@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import ErrorPopUp from "../ErrorPopUp";
 
 type PreRequisiteErrorType = {
-  name: string;
+  text: string;
   status: boolean;
+  option?: string;
+  responseFunction?: () => void;
 };
 
 const SubjectModal = ({
@@ -44,7 +46,11 @@ const SubjectModal = ({
     const newSemesterSubjects = semester.subjects.map((semesterSubject) =>
       semesterSubject.id === newSubject.id ? newSubject : semesterSubject
     );
-    if(!checkIfPreRequisitesAreFinished() && finished) return ;
+    if (!checkIfPreRequisitesAreFinished() && finished) return;
+   
+    if (!finished)
+      if(!checkIfOtherSubjectsThatHaveThisSubjectAsPreRequisiteAreFinished()) return;
+
     setSemesters((prevState) =>
       prevState.map((oldSemester) => {
         if (oldSemester.id === semester.id) {
@@ -54,6 +60,8 @@ const SubjectModal = ({
         }
       })
     );
+
+
     handleClose();
   };
 
@@ -70,14 +78,60 @@ const SubjectModal = ({
     );
     if (preRequisitesNotFinished.length > 0) {
       setPreRequisiteError({
-        name: preRequisitesNotFinished[0].name,
+        text: `Não é possível finalizar esse componente pois ${preRequisitesNotFinished[0].name} é pre requisito e ainda não foi concluido.`,
         status: true,
       });
-      setFinished(false)
+      setFinished(false);
     }
 
     return preRequisitesNotFinished.length === 0;
   };
+
+  const checkIfOtherSubjectsThatHaveThisSubjectAsPreRequisiteAreFinished =
+    () => {
+      const otherSubjects = semesters.flatMap((semester) => semester.subjects);
+      const otherSubjectsThatHaveThisSubjectAsPreRequisiteFinished =
+        otherSubjects.filter((semesterSubject) =>
+          semesterSubject.subject.pre_requisites.some(
+            (prerequisite) =>
+              prerequisite.id === subject.subject.id && semesterSubject.finished
+          )
+        );
+      if (otherSubjectsThatHaveThisSubjectAsPreRequisiteFinished.length === 0)
+        return true;
+
+      const responseFuntion = () => {
+        let newSemesters = semesters;
+        otherSubjectsThatHaveThisSubjectAsPreRequisiteFinished.concat(subject).forEach(
+          (subject) => {
+            const newSubject = {
+              ...subject,
+              finished: false,
+            };
+            newSemesters = newSemesters.map((semester) => {
+              return {
+                ...semester,
+                subjects: semester.subjects.map((semesterSubject) => {
+                  return semesterSubject.id === newSubject.id
+                    ? newSubject
+                    : semesterSubject;
+                }),
+              };
+            });
+          }
+        );
+        setSemesters(newSemesters);
+        handleClose();
+        setPreRequisiteError({} as PreRequisiteErrorType);
+      };
+      setPreRequisiteError({
+        text: `Existem matérias concluidas que possuem ${subject.subject.name} como pré requisito,para desmarcar esta matéria é necessário marcas-las como não concluidas.`,
+        status: true,
+        option: "Deseja continuar?",
+        responseFunction: responseFuntion,
+      });
+      return false;
+    };
 
   useEffect(() => {
     const getTeachers = async () => {
@@ -124,7 +178,7 @@ const SubjectModal = ({
                 <h2 className="w-full font-bold">Pré requisitos:</h2>
                 <div className="flex flex-col w-full">
                   {subject.subject.pre_requisites.map((prerequisite) => (
-                    <h3 className="">
+                    <h3 className="" key={prerequisite.id}>
                       {prerequisite.id}-{prerequisite.name}
                     </h3>
                   ))}
@@ -136,7 +190,7 @@ const SubjectModal = ({
                 <h2 className="w-full font-bold">Co requisitos:</h2>
                 <div className="flex flex-col w-full">
                   {subject.subject.co_requisites.map((coRequisite) => (
-                    <h3 className="">
+                    <h3 className="" key={coRequisite.id}>
                       {coRequisite.id}-{coRequisite.name}
                     </h3>
                   ))}
@@ -165,7 +219,7 @@ const SubjectModal = ({
                 onChange={(e) => setTeacherName(e.target.value)}
               >
                 {teachers.map((teacher) => (
-                  <option className="truncate">
+                  <option className="truncate" key={teacher.id}>
                     {teacher.name === "Padrão" ? "Não informar" : teacher.name}
                   </option>
                 ))}
@@ -180,10 +234,16 @@ const SubjectModal = ({
           </form>
         </div>
       </section>
-      {preRequisiteError.status && <ErrorPopUp
-        error={`Não é possível finalizar esse componente pois ${preRequisiteError.name} é pre requisito e ainda não foi concluido.`}
-        handleClosePopUp={() => setPreRequisiteError({} as PreRequisiteErrorType)}
-      />}
+      {preRequisiteError.status && (
+        <ErrorPopUp
+          error={preRequisiteError.text}
+          option={preRequisiteError.option}
+          responseFunction={preRequisiteError.responseFunction}
+          handleClosePopUp={() =>
+            setPreRequisiteError({} as PreRequisiteErrorType)
+          }
+        />
+      )}
     </>
   );
 };
