@@ -32,10 +32,12 @@ const ErrorPopUp = ({
   const progress=(time/3)*100;
 
   return (
-    <div className="flex flex-col items-center p-3 z-10 fixed bottom-5 right-5 min-w-[20%]  bg-white rounded-md border border-black shadow-xl ">
+    <div className="gap-3 flex flex-col items-center p-3 z-10 fixed bottom-5 right-5 min-w-[20%] max-w-[30%] bg-white rounded-md border border-black shadow-xl ">
+      <div className="flex flex-col">
       <MdError className="text-[#f00]" size={30} />
       <h1 className="font-bold text-lg">Erro</h1>
-      <p>{error}</p>
+      </div>
+      <p className="text-wrap text-center">{error}</p>
       {option && responseFunction && (
         <div className="flex flex-col items-center">
           <h2>Deseja mover os co-requisitos também?</h2>
