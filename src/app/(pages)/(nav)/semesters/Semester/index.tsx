@@ -8,10 +8,12 @@ const Semester = ({
   semester,
   index,
   setSemesters,
+  semesters,
 }: {
   semester: SemesterUserType;
   index: number;
   setSemesters: React.Dispatch<React.SetStateAction<SemesterUserType[]>>;
+  semesters: SemesterUserType[];
 }) => {
   return (
     <Droppable
@@ -34,6 +36,7 @@ const Semester = ({
                 key={subject.id}
                 setSemesters={setSemesters}
                 semester={semester}
+                semesters={semesters}
               />
             ))}
           </div>
@@ -50,12 +53,14 @@ const Subject = ({
   subject,
   index,
   setSemesters,
-  semester
+  semester,
+  semesters
 }: {
   subject: SemesterSubjectType;
   index: number;
   setSemesters: React.Dispatch<React.SetStateAction<SemesterUserType[]>>;
   semester:SemesterUserType;
+  semesters:SemesterUserType[];
 }) => {
   const [openSubjectPopUp, setOpenSubjectPopUp] = useState(false);
 
@@ -83,6 +88,7 @@ const Subject = ({
           handleClose={() => setOpenSubjectPopUp(false)}
           setSemesters={setSemesters}
           semester={semester}
+          semesters={semesters}
         />
       )}
     </>

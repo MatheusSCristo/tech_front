@@ -10,7 +10,7 @@ const ErrorPopUp = ({
   error: string;
   handleClosePopUp: () => void;
   option?: boolean;
-  responseFunction: () => void;
+  responseFunction?: () => void;
 }) => {
   const [time, setTime] = useState(0);
 
@@ -36,7 +36,7 @@ const ErrorPopUp = ({
       <MdError className="text-[#f00]" size={30} />
       <h1 className="font-bold text-lg">Erro</h1>
       <p>{error}</p>
-      {option && (
+      {option && responseFunction && (
         <div className="flex flex-col items-center">
           <h2>Deseja mover os co-requisitos também?</h2>
           <div className="flex gap-2">

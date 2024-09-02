@@ -158,6 +158,7 @@ const Semesters = () => {
                   index={index}
                   key={semester.id}
                   setSemesters={setSemesters}
+                  semesters={semesters}
                 />
               ))}
             </DragDropContext>
