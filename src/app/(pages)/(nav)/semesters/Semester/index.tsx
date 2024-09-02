@@ -1,7 +1,7 @@
 import { SemesterUserType } from "@/types/semester";
 import { SemesterSubjectType } from "@/types/semesterSubject";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ErrorPopUp from "../ErrorPopUp";
 import SubjectModal from "../SubjectModal";
 
@@ -22,6 +22,10 @@ const Semester = ({
   semesters: SemesterUserType[];
 }) => {
   const [error, setError] = useState({} as ErrorType);
+  const [selectingSubjects, setSelectingSubjects] = useState(false);
+  const [selectedSubjects, setSelectedSubjects] = useState(
+    [] as SemesterSubjectType[]
+  );
 
   const checkIfPreRequisitesAreFinished = (subject: SemesterSubjectType) => {
     const preRequisites = subject.subject.pre_requisites;
@@ -39,24 +43,38 @@ const Semester = ({
 
   const handleFinishAllSubjects = () => {
     const newSemesterSubjects = semester.subjects.map((semesterSubject) => {
-      if (checkIfPreRequisitesAreFinished(semesterSubject).length) {
-        const subjectThatHasPrerequistesNotFinished = semester.subjects
-          .filter((semesterSubject) =>
-            checkIfPreRequisitesAreFinished(semesterSubject).length
-          )
-          .flatMap((subject) => subject);
+      if (
+        selectedSubjects.some(
+          (selectedSubject) =>
+            selectedSubject.subject.id === semesterSubject.subject.id
+        )
+      ) {
+        if (checkIfPreRequisitesAreFinished(semesterSubject).length) {
+          const subjectThatHasPrerequistesNotFinished = selectedSubjects
+            .filter(
+              (semesterSubject) =>
+                checkIfPreRequisitesAreFinished(semesterSubject).length
+            )
+            .flatMap((subject) => subject);
 
-          const subjectThatHasPrerequistesNotFinishedText=subjectThatHasPrerequistesNotFinished.map((subject)=>subject.subject.name).join(", ");
+          const subjectThatHasPrerequistesNotFinishedText =
+            subjectThatHasPrerequistesNotFinished
+              .map((subject) => subject.subject.name)
+              .join(", ");
 
-        setError({
-          text: `Não é possível concluir os componentes ${subjectThatHasPrerequistesNotFinishedText}. Pois possuem pre requisitos  não concluidos.`,
-          status: true,
-        });
-        return semesterSubject;
+          setError({
+            text: `Não é possível concluir os componentes ${subjectThatHasPrerequistesNotFinishedText}. Pois possuem pré requisitos  não concluidos.`,
+            status: true,
+          });
+          return semesterSubject;
+        }
+        return {
+          ...semesterSubject,
+          finished: true,
+        };
       }
       return {
         ...semesterSubject,
-        finished: true,
       };
     });
     setSemesters((prevState) =>
@@ -68,6 +86,8 @@ const Semester = ({
         }
       })
     );
+    setSelectedSubjects([]);
+    setSelectingSubjects(false);
   };
 
   return (
@@ -78,7 +98,15 @@ const Semester = ({
         direction="horizontal"
       >
         {(provided) => (
-          <div className="flex flex-col border-b-[1px] border-black pb-5 gap-2">
+          <div className="px-2 flex flex-col border-b-[1px] border-black pb-5 gap-2">
+            <div className="self-start">
+              <button
+                className=" px-1 border-b-[1px] border-black hover:scale-[1.05] duration-300"
+                onClick={() => setSelectingSubjects((prevState) => !prevState)}
+              >
+                Selecionar
+              </button>
+            </div>
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
@@ -88,23 +116,28 @@ const Semester = ({
               <div className="flex flex-wrap gap-10 justify-center w-full">
                 {semester.subjects.map((subject, index) => (
                   <Subject
+                    setSelectedSubjects={setSelectedSubjects}
                     subject={subject}
                     index={index}
                     key={subject.id}
                     setSemesters={setSemesters}
                     semester={semester}
+                    selecting={selectingSubjects}
                     semesters={semesters}
                   />
                 ))}
               </div>
               {provided.placeholder}
             </div>
-            <button
-              className="self-end border-black border px-1 rounded"
-              onClick={handleFinishAllSubjects}
-            >
-              Marcar todos como concluidos
-            </button>
+            {selectingSubjects && (
+              <button
+                className="border-black border-b-[1px] px-1 self-end hover:scale-[1.05] duration-300"
+                onClick={handleFinishAllSubjects}
+              >
+                Marcar como concluido{selectedSubjects.length <= 1 ? "" : "s"} (
+                {selectedSubjects.length})
+              </button>
+            )}
           </div>
         )}
       </Droppable>
@@ -126,32 +159,71 @@ const Subject = ({
   setSemesters,
   semester,
   semesters,
+  setSelectedSubjects,
+  selecting,
 }: {
   subject: SemesterSubjectType;
   index: number;
   setSemesters: React.Dispatch<React.SetStateAction<SemesterUserType[]>>;
   semester: SemesterUserType;
   semesters: SemesterUserType[];
+  setSelectedSubjects: React.Dispatch<
+    React.SetStateAction<SemesterSubjectType[]>
+  >;
+  selecting: boolean;
 }) => {
   const [openSubjectPopUp, setOpenSubjectPopUp] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (checked) {
+      setSelectedSubjects((prevState) => [...prevState, subject]);
+      return;
+    }
+    setSelectedSubjects((prevState) =>
+      prevState.filter(
+        (selectedSubject) => selectedSubject.subject.id !== subject.subject.id
+      )
+    );
+  }, [checked]);
+
+  useEffect(() => {
+    if (!selecting) setChecked(false);
+  }, [selecting]);
 
   return (
     <>
       <Draggable draggableId={subject.subject.id} index={index}>
         {(provided) => (
-          <div
-            onClick={() => setOpenSubjectPopUp(true)}
-            onDrag={() => setOpenSubjectPopUp(false)}
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            className={`${
-              subject.finished ? "opacity-[50%]" : "opacity-1"
-            } overflow-hidden bg-mandatoryBlue border border-black h-[200px] w-[10%] flex items-center justify-center rounded p-3`}
-          >
-            <span className="text-center text-wrap truncate">
-              {subject.subject.name}
-            </span>
+          <div className="flex flex-col h-[200px] relative ">
+            {selecting && (
+              <div
+                className="h-full w-full absolute cursor-pointer z-10"
+                onClick={() => {
+                  setChecked((prevState) => !prevState);
+                }}
+              >
+                <input
+                  checked={checked}
+                  className="self-start m-1"
+                  type="checkbox"
+                />
+              </div>
+            )}
+            <div
+              onClick={() => setOpenSubjectPopUp(true)}
+              onDrag={() => setOpenSubjectPopUp(false)}
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              className={`${
+                subject.finished ? "opacity-[50%]" : "opacity-1"
+              } m-2 overflow-hidden bg-mandatoryBlue border border-black h-[200px] w-[10vw] flex items-center justify-center rounded p-3`}
+            >
+              <span className="text-center text-wrap truncate">
+                {subject.subject.name}
+              </span>
+            </div>
           </div>
         )}
       </Draggable>

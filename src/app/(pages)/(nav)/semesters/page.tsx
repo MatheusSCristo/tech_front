@@ -149,7 +149,7 @@ const Semesters = () => {
     <>
       <div className="bg-[#ffffffd6] m-10  flex flex-col items-center p-5 rounded-xl gap-10">
         <h1 className="text-[2.5em]">Semestres</h1>
-        <div className="flex flex-col gap-10 min-h-screen">
+        <div className="flex flex-col gap-5 min-h-screen">
           {semesters.length > 0 && (
             <DragDropContext onDragEnd={handleOnDragEnd}>
               {semesters?.map((semester, index) => (
