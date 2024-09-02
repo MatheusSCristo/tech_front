@@ -31,8 +31,6 @@ const ErrorPopUp = ({
 
   const progress=(time/3)*100;
 
-  console.log("called")
-  
   return (
     <div className="gap-3 flex flex-col items-center p-3 z-10 fixed bottom-5 right-5 min-w-[20%] max-w-[30%] bg-white rounded-md border border-black shadow-xl ">
       <div className="flex flex-col">

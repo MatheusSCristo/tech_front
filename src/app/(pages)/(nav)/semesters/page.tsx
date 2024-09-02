@@ -27,6 +27,8 @@ const Semesters = () => {
     () => {}
   );
 
+  const [hideSubjects, setHideSubjects] = useState(false);
+
   useEffect(() => {
     const getSemesters = async () => {
       if (user) {
@@ -112,11 +114,11 @@ const Semesters = () => {
       return;
     }
     const canMoveSubject =
-    checkPreRequisitesNotPaid(subject, destinationSemester) &&
-    checkPreRequisitesOfSubjectOnDestinationSemester(
-      subject,
-      destinationSemester
-    ) &&
+      checkPreRequisitesNotPaid(subject, destinationSemester) &&
+      checkPreRequisitesOfSubjectOnDestinationSemester(
+        subject,
+        destinationSemester
+      ) &&
       checkSubjectItsCoRequisiteOf(
         setSemesters,
         semesters,
@@ -133,7 +135,8 @@ const Semesters = () => {
         subject.subject,
         setSubjectError,
         setOpenPopUp,
-        setResponseFunction);
+        setResponseFunction
+      );
 
     if (!canMoveSubject) return;
 
@@ -149,11 +152,18 @@ const Semesters = () => {
     <>
       <div className="bg-[#ffffffd6] m-10  flex flex-col items-center p-5 rounded-xl gap-10">
         <h1 className="text-[2.5em]">Semestres</h1>
-        <div className="flex flex-col gap-5 min-h-screen">
+        <button
+          className="self-end px-1 border-b-[1px] border-black hover:scale-[1.05] duration-300"
+          onClick={() => setHideSubjects((prevState) => !prevState)}
+        >
+          {hideSubjects?"Mostrar":"Esconder"} componentes concluidos
+        </button>
+        <div className="flex flex-col gap-5 min-h-screen w-full">
           {semesters.length > 0 && (
             <DragDropContext onDragEnd={handleOnDragEnd}>
               {semesters?.map((semester, index) => (
                 <Semester
+                  hideSubjects={hideSubjects}
                   semester={semester}
                   index={index}
                   key={semester.id}
