@@ -17,12 +17,14 @@ export const getSubjectCoRequisites = (
   setSubjectError: Dispatch<SetStateAction<SubjectErrorType>>,
   setOpenPopUp: Dispatch<SetStateAction<boolean>>,
   setResponseFunction: Dispatch<SetStateAction<() => void>>
-
-  
 ) => {
   const { co_requisites: coRequisites } = subject;
   const coRequisitesPaid = coRequisites.filter((coRequisite) => {
-    semester.subjects.some((subject) => coRequisite.id === subject.subject.id);
+    return semesters.some((allSemester) =>
+      allSemester.subjects.some((subject) => {
+        return coRequisite.id === subject.subject.id && subject.finished;
+      })
+    );
   });
 
   if (coRequisitesPaid.length != coRequisites.length) {
@@ -30,6 +32,7 @@ export const getSubjectCoRequisites = (
       (coRequisite) =>
         !coRequisitesPaid.some((paid) => paid.id == coRequisite.id)
     );
+
     setSubjectError({
       option: true,
       error: `Não é possível mover esta matéria para o semestre desejado,pois ${coRequisitesNotPaid?.name} é co-requisito.`,
@@ -42,7 +45,8 @@ export const getSubjectCoRequisites = (
         const itsPreRequisiteOfSubjectOnSemester = semester.subjects.find(
           (semesterSubject) =>
             semesterSubject.subject.pre_requisites.some(
-              (requisite) => requisite.id === subject.id
+              (requisite) =>
+                requisite.id === subject.id && !semesterSubject.finished
             )
         );
 

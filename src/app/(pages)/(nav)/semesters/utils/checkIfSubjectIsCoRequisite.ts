@@ -11,7 +11,7 @@ export const checkIfSubjectIsCoRequisite = (semesters:SemesterUserType[],subject
       .map((userSemester) =>
         userSemester.subjects.filter((semesterSubject) =>
           semesterSubject.subject.co_requisites.some(
-            (coRequisite) => coRequisite.id == subject.id
+            (coRequisite) => coRequisite.id == subject.id && !semesterSubject.finished
           )
         )
       )

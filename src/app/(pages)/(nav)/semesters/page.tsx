@@ -79,8 +79,6 @@ const Semesters = () => {
     const preRequisitesOfSubjectOnDestinationSemester =
       getPrerequisiteDependencies(destinationSemester, subject);
 
-    console.log(preRequisitesOfSubjectOnDestinationSemester)
-      
     if (preRequisitesOfSubjectOnDestinationSemester) {
       setSubjectError({
         option: false,

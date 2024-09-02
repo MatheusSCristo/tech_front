@@ -19,7 +19,7 @@ export const getSubjectPreRequisitesNotFinished = (
           if(semester.semester < destinationSemesters.semester) return false;
           return (
             semesterSubject.subject.id === subjectPreRequiste.id &&
-            semesterSubject.finished == false 
+            !semesterSubject.finished  
           );
         })
       )
