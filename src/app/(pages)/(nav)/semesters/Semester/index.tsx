@@ -28,6 +28,7 @@ const Semester = ({
   const [selectedSubjects, setSelectedSubjects] = useState(
     [] as SemesterSubjectType[]
   );
+  const [selectAllSubjects, setSelectAllSubjects] = useState(false);
 
   const checkIfPreRequisitesAreFinished = (subject: SemesterSubjectType) => {
     const preRequisites = subject.subject.pre_requisites;
@@ -92,6 +93,14 @@ const Semester = ({
     setSelectingSubjects(false);
   };
 
+  useEffect(() => {
+    if (selectAllSubjects) {
+      setSelectedSubjects(semester.subjects);
+    } else {
+      setSelectedSubjects([]);
+    }
+  }, [selectAllSubjects]);
+
   return (
     <>
       <Droppable
@@ -128,23 +137,41 @@ const Semester = ({
                         semester={semester}
                         selecting={selectingSubjects}
                         semesters={semesters}
+                        selectedSubjects={selectedSubjects}
                       />
                     );
                   })}
                 {((semester.subjects.every((subject) => subject.finished) &&
                   hideSubjects) ||
-                  semester.subjects.length === 0) && <h2 className="font-bold">Nenhum componente para exibir...</h2>}
+                  semester.subjects.length === 0) && (
+                  <h2 className="font-bold">
+                    Nenhum componente para exibir...
+                  </h2>
+                )}
               </div>
               {provided.placeholder}
             </div>
             {selectingSubjects && (
-              <button
-                className="border-black border-b-[1px] px-1 self-end hover:scale-[1.05] duration-300"
-                onClick={handleFinishAllSubjects}
-              >
-                Marcar como concluido{selectedSubjects.length <= 1 ? "" : "s"} (
-                {selectedSubjects.length})
-              </button>
+              <div className="self-end flex justify-between w-full">
+                <div className="flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    id="selectAll"
+                    onChange={() =>
+                      setSelectAllSubjects((prevState) => !prevState)
+                    }
+                    checked={selectAllSubjects}
+                  />
+                  <label htmlFor="selectAll">Selecionar todos</label>
+                </div>
+                <button
+                  className="border-black border-b-[1px] px-1  hover:scale-[1.05] duration-300"
+                  onClick={handleFinishAllSubjects}
+                >
+                  Marcar como concluido{selectedSubjects.length <= 1 ? "" : "s"}{" "}
+                  ({selectedSubjects.length})
+                </button>
+              </div>
             )}
           </div>
         )}
@@ -169,12 +196,14 @@ const Subject = ({
   semesters,
   setSelectedSubjects,
   selecting,
+  selectedSubjects,
 }: {
   subject: SemesterSubjectType;
   index: number;
   setSemesters: React.Dispatch<React.SetStateAction<SemesterUserType[]>>;
   semester: SemesterUserType;
   semesters: SemesterUserType[];
+  selectedSubjects: SemesterSubjectType[];
   setSelectedSubjects: React.Dispatch<
     React.SetStateAction<SemesterSubjectType[]>
   >;
@@ -183,17 +212,21 @@ const Subject = ({
   const [openSubjectPopUp, setOpenSubjectPopUp] = useState(false);
   const [checked, setChecked] = useState(false);
 
+  const handleChecked = () => {
+    if (!checked) setSelectedSubjects((prevState) => [...prevState, subject]);
+    else
+      setSelectedSubjects((prevState) =>
+        prevState.filter((item) => item.id !== subject.id)
+      );
+  };
+
   useEffect(() => {
-    if (checked) {
-      setSelectedSubjects((prevState) => [...prevState, subject]);
+    if (selectedSubjects.some((item) => item.id === subject.id)) {
+      setChecked(true);
       return;
     }
-    setSelectedSubjects((prevState) =>
-      prevState.filter(
-        (selectedSubject) => selectedSubject.subject.id !== subject.subject.id
-      )
-    );
-  }, [checked]);
+    setChecked(false);
+  }, [selectedSubjects]);
 
   useEffect(() => {
     if (!selecting) setChecked(false);
@@ -207,14 +240,13 @@ const Subject = ({
             {selecting && (
               <div
                 className="h-full w-full absolute cursor-pointer z-10"
-                onClick={() => {
-                  setChecked((prevState) => !prevState);
-                }}
+                onClick={handleChecked}
               >
                 <input
                   checked={checked}
                   className="self-start m-1"
                   type="checkbox"
+                  readOnly
                 />
               </div>
             )}
