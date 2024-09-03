@@ -1,4 +1,5 @@
 "use client";
+import { SemesterContext } from "@/app/context/SemesterContext";
 import { UserContext } from "@/app/context/UserContext";
 import { SemesterUserType } from "@/types/semester";
 import { SemesterSubjectType } from "@/types/semesterSubject";
@@ -15,7 +16,7 @@ import { getSubjectPreRequisitesNotFinished } from "./utils/validations/getSubje
 
 const Semesters = () => {
   const { user } = useContext(UserContext);
-  const [semesters, setSemesters] = useState<SemesterUserType[]>([]);
+  const { semesters, setSemesters } = useContext(SemesterContext);
   const [error, setError] = useState(false);
   const subjects = semesters?.flatMap((item) => item.subjects);
   const [openPopUp, setOpenPopUp] = useState(false);
@@ -167,14 +168,12 @@ const Semesters = () => {
                   semester={semester}
                   index={index}
                   key={semester.id}
-                  setSemesters={setSemesters}
-                  semesters={semesters}
                 />
               ))}
             </DragDropContext>
           )}
           {semesters.length == 0 && !error && (
-            <div>
+            <div className="w-full h-full flex items-center justify-center">
               <CircularProgress />
             </div>
           )}

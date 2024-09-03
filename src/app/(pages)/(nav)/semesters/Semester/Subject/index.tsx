@@ -72,8 +72,8 @@ const Subject = ({
                 {...provided.dragHandleProps}
                 className={`${
                   subject.finished ? "opacity-[50%]" : "opacity-1"
-                } m-2 overflow-hidden bg-mandatoryBlue border border-black h-[200px] w-[10vw] flex items-center justify-center rounded p-3 shadow-[#2587e265]
-                ${checked?"shadow-xl":""} 
+                } m-2 overflow-hidden bg-mandatoryBlue border border-black h-[200px] w-[10vw] flex items-center justify-center rounded p-3 shadow-xl
+                ${checked?"shadow-[#2587e265]":""} 
                 `}
               >
                 <span className="text-center text-wrap truncate">

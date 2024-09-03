@@ -78,7 +78,7 @@ const Subjects = () => {
       <div className="bg-[#ffffffae] w-full h-full rounded-xl flex flex-col items-center px-5 py-2 gap-5">
         <h1 className="text-[3em] leading-none">Matérias</h1>
         <div className="bg-white w-full p-2 rounded-md flex justify-between">
-          <SearchBar searched={searched} setSearched={setSearched} />
+          <SearchBar searched={searched} setSearched={setSearched} size="w-1/2"/>
           <Filter setFilter={setFilter} filter={filter}/>
         </div>
         <div className="w-full flex-1 overflow-x-hidden overflow-y-scroll  ">

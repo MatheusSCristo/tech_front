@@ -4,10 +4,10 @@ import { SemesterSubjectType } from "@/types/semesterSubject";
 import { Droppable } from "@hello-pangea/dnd";
 import { useContext, useEffect, useState } from "react";
 import ErrorPopUp from "../ErrorPopUp";
+import OptionalSubjectBox from "./OptionalSubjectBox";
 import Subject from "./Subject";
 import { default as getNewFinishedSemestersSubjects } from "./util/getNewFinishedSemesterSubjects";
 import getNewNotFinishedSemesterSubjects from "./util/getNewNotFinishedSubjects";
-import OptionalSubjectBox from "./OptionalSubjectBox";
 
 type ErrorType = {
   text: string;
@@ -136,7 +136,7 @@ const Semester = ({
                       />
                     );
                   })}
-                  <OptionalSubjectBox/>
+                  <OptionalSubjectBox semester={semester}/>
               </div>
               {provided.placeholder}
             </div>
