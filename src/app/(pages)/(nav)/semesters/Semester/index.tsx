@@ -1,9 +1,11 @@
 import { SemesterUserType } from "@/types/semester";
 import { SemesterSubjectType } from "@/types/semesterSubject";
-import { Draggable, Droppable } from "@hello-pangea/dnd";
+import { Droppable } from "@hello-pangea/dnd";
 import { useEffect, useState } from "react";
 import ErrorPopUp from "../ErrorPopUp";
-import SubjectModal from "../SubjectModal";
+import Subject from "./Subject";
+import { default as getNewFinishedSemestersSubjects } from "./util/getNewFinishedSemesterSubjects";
+import getNewNotFinishedSemesterSubjects from "./util/getNewNotFinishedSubjects";
 
 type ErrorType = {
   text: string;
@@ -30,68 +32,38 @@ const Semester = ({
   );
   const [selectAllSubjects, setSelectAllSubjects] = useState(false);
 
-  const checkIfPreRequisitesAreFinished = (subject: SemesterSubjectType) => {
-    const preRequisites = subject.subject.pre_requisites;
-    const preRequisitesNotFinished = preRequisites.filter((prerequisite) =>
-      semesters.some((semester) =>
-        semester.subjects.some(
-          (semesterSubject) =>
-            semesterSubject.subject.id === prerequisite.id &&
-            !semesterSubject.finished
-        )
-      )
-    );
-    return preRequisitesNotFinished;
-  };
-
+ 
   const handleFinishAllSubjects = () => {
-    const newSemesterSubjects = semester.subjects.map((semesterSubject) => {
-      if (
-        selectedSubjects.some(
-          (selectedSubject) =>
-            selectedSubject.subject.id === semesterSubject.subject.id
-        )
-      ) {
-        if (checkIfPreRequisitesAreFinished(semesterSubject).length) {
-          const subjectThatHasPrerequistesNotFinished = selectedSubjects
-            .filter(
-              (semesterSubject) =>
-                checkIfPreRequisitesAreFinished(semesterSubject).length
-            )
-            .flatMap((subject) => subject);
-
-          const subjectThatHasPrerequistesNotFinishedText =
-            subjectThatHasPrerequistesNotFinished
-              .map((subject) => subject.subject.name)
-              .join(", ");
-
-          setError({
-            text: `Não é possível concluir os componentes ${subjectThatHasPrerequistesNotFinishedText}. Pois possuem pré requisitos  não concluidos.`,
-            status: true,
-          });
-          return semesterSubject;
-        }
-        return {
-          ...semesterSubject,
-          finished: true,
-        };
-      }
-      return {
-        ...semesterSubject,
-      };
-    });
     setSemesters((prevState) =>
       prevState.map((oldSemester) => {
         if (oldSemester.id === semester.id) {
-          return { ...oldSemester, subjects: newSemesterSubjects };
+          return { ...oldSemester, subjects: getNewFinishedSemestersSubjects(oldSemester, selectedSubjects,semesters,setError) };
         } else {
           return oldSemester;
         }
       })
     );
     setSelectedSubjects([]);
+    setSelectAllSubjects(false);
     setSelectingSubjects(false);
   };
+
+
+  const handleNotFinishedSubjects = () => {
+    const newSubjects= getNewNotFinishedSemesterSubjects(semester, selectedSubjects,semesters,setError);
+    setSemesters((prevState) =>
+    prevState.map((oldSemester) => {
+      if (oldSemester.id === semester.id) {
+        return { ...oldSemester, subjects:newSubjects };
+      } else {
+        return oldSemester;
+      }
+    })
+  );
+  setSelectedSubjects([]);
+  setSelectAllSubjects(false);
+  setSelectingSubjects(false);
+  }
 
   useEffect(() => {
     if (selectAllSubjects) {
@@ -164,13 +136,22 @@ const Semester = ({
                   />
                   <label htmlFor="selectAll">Selecionar todos</label>
                 </div>
+                <div className="flex flex-col">
                 <button
                   className="border-black border-b-[1px] px-1  hover:scale-[1.05] duration-300"
                   onClick={handleFinishAllSubjects}
-                >
+                  >
                   Marcar como concluido{selectedSubjects.length <= 1 ? "" : "s"}{" "}
                   ({selectedSubjects.length})
                 </button>
+                <button
+                  className="border-black border-b-[1px] px-1  hover:scale-[1.05] duration-300"
+                  onClick={handleNotFinishedSubjects}
+                  >
+                  Marcar não como concluido{selectedSubjects.length <= 1 ? "" : "s"}{" "}
+                  ({selectedSubjects.length})
+                </button>
+                  </div>
               </div>
             )}
           </div>
@@ -188,94 +169,3 @@ const Semester = ({
 
 export default Semester;
 
-const Subject = ({
-  subject,
-  index,
-  setSemesters,
-  semester,
-  semesters,
-  setSelectedSubjects,
-  selecting,
-  selectedSubjects,
-}: {
-  subject: SemesterSubjectType;
-  index: number;
-  setSemesters: React.Dispatch<React.SetStateAction<SemesterUserType[]>>;
-  semester: SemesterUserType;
-  semesters: SemesterUserType[];
-  selectedSubjects: SemesterSubjectType[];
-  setSelectedSubjects: React.Dispatch<
-    React.SetStateAction<SemesterSubjectType[]>
-  >;
-  selecting: boolean;
-}) => {
-  const [openSubjectPopUp, setOpenSubjectPopUp] = useState(false);
-  const [checked, setChecked] = useState(false);
-
-  const handleChecked = () => {
-    if (!checked) setSelectedSubjects((prevState) => [...prevState, subject]);
-    else
-      setSelectedSubjects((prevState) =>
-        prevState.filter((item) => item.id !== subject.id)
-      );
-  };
-
-  useEffect(() => {
-    if (selectedSubjects.some((item) => item.id === subject.id)) {
-      setChecked(true);
-      return;
-    }
-    setChecked(false);
-  }, [selectedSubjects]);
-
-  useEffect(() => {
-    if (!selecting) setChecked(false);
-  }, [selecting]);
-
-  return (
-    <>
-      <Draggable draggableId={subject.subject.id} index={index}>
-        {(provided) => (
-          <div className="flex flex-col h-[200px] relative ">
-            {selecting && (
-              <div
-                className="h-full w-full absolute cursor-pointer z-10"
-                onClick={handleChecked}
-              >
-                <input
-                  checked={checked}
-                  className="self-start m-1"
-                  type="checkbox"
-                  readOnly
-                />
-              </div>
-            )}
-            <div
-              onClick={() => setOpenSubjectPopUp(true)}
-              onDrag={() => setOpenSubjectPopUp(false)}
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              className={`${
-                subject.finished ? "opacity-[50%]" : "opacity-1"
-              } m-2 overflow-hidden bg-mandatoryBlue border border-black h-[200px] w-[10vw] flex items-center justify-center rounded p-3`}
-            >
-              <span className="text-center text-wrap truncate">
-                {subject.subject.name}
-              </span>
-            </div>
-          </div>
-        )}
-      </Draggable>
-      {openSubjectPopUp && (
-        <SubjectModal
-          subject={subject}
-          handleClose={() => setOpenSubjectPopUp(false)}
-          setSemesters={setSemesters}
-          semester={semester}
-          semesters={semesters}
-        />
-      )}
-    </>
-  );
-};
