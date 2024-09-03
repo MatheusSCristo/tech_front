@@ -1,7 +1,7 @@
 import { SemesterUserType } from "@/types/semester";
 import { SemesterSubjectType } from "@/types/semesterSubject";
 import { Draggable } from "@hello-pangea/dnd";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import SubjectModal from "../../SubjectModal";
 
 const Subject = ({
@@ -55,7 +55,7 @@ const Subject = ({
             <div className="flex flex-col h-[200px] relative ">
               {selecting && (
                 <div
-                  className="h-full w-full absolute cursor-pointer z-10"
+                  className={` border-blue rounded h-full w-full absolute cursor-pointer z-10`}
                   onClick={handleChecked}
                 >
                   <input
@@ -74,7 +74,9 @@ const Subject = ({
                 {...provided.dragHandleProps}
                 className={`${
                   subject.finished ? "opacity-[50%]" : "opacity-1"
-                } m-2 overflow-hidden bg-mandatoryBlue border border-black h-[200px] w-[10vw] flex items-center justify-center rounded p-3`}
+                } m-2 overflow-hidden bg-mandatoryBlue border border-black h-[200px] w-[10vw] flex items-center justify-center rounded p-3 shadow-[#2587e265]
+                ${checked?"shadow-xl":""} 
+                `}
               >
                 <span className="text-center text-wrap truncate">
                   {subject.subject.name}
