@@ -13,9 +13,11 @@ const OptionalSubjectBox = ({ semester }: { semester: SemesterUserType }) => {
     <>
       <div
         onClick={() => setOpenSubjectPopUp(true)}
-        className="flex flex-col h-[200px] relative w-[10vw] bg-[#ffffff8d] border-black border rounded flex items-center justify-center shadow-xl cursor-pointer hover:scale-[1.05] duration-300"
+        className="flex flex-col h-[250px] relative cursor-pointer hover:scale-[1.05] duration-300"
       >
+        <div className="m-5 h-[200px] w-[10vw] bg-[#ffffff8d] flex items-center justify-center border-black border rounded  shadow-xl">
         <CiCirclePlus className="text-" size={50} />
+        </div>
       </div>
       {openSubjectPopUp && (
         <OptionalSubjectsModal
