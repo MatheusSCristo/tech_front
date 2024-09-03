@@ -1,7 +1,8 @@
+import { SemesterContext } from "@/app/context/SemesterContext";
 import { SemesterUserType } from "@/types/semester";
 import { SemesterSubjectType } from "@/types/semesterSubject";
 import { TeacherType } from "@/types/teacher";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ErrorPopUp from "../ErrorPopUp";
 
 type PreRequisiteErrorType = {
@@ -14,16 +15,13 @@ type PreRequisiteErrorType = {
 const SubjectModal = ({
   subject,
   handleClose,
-  setSemesters,
   semester,
-  semesters,
 }: {
   subject: SemesterSubjectType;
   handleClose: () => void;
-  setSemesters: React.Dispatch<React.SetStateAction<SemesterUserType[]>>;
   semester: SemesterUserType;
-  semesters: SemesterUserType[];
 }) => {
+  const { setSemesters, semesters } = useContext(SemesterContext);
   const [finished, setFinished] = useState(subject.finished);
   const [teachers, setTeachers] = useState<TeacherType[]>([]);
   const [teacherName, setTeacherName] = useState<string | undefined>(

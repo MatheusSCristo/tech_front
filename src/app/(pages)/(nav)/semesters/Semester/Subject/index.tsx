@@ -1,24 +1,21 @@
+import { SemesterContext } from "@/app/context/SemesterContext";
 import { SemesterUserType } from "@/types/semester";
 import { SemesterSubjectType } from "@/types/semesterSubject";
 import { Draggable } from "@hello-pangea/dnd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SubjectModal from "../../SubjectModal";
 
 const Subject = ({
     subject,
     index,
-    setSemesters,
     semester,
-    semesters,
     setSelectedSubjects,
     selecting,
     selectedSubjects,
   }: {
     subject: SemesterSubjectType;
     index: number;
-    setSemesters: React.Dispatch<React.SetStateAction<SemesterUserType[]>>;
     semester: SemesterUserType;
-    semesters: SemesterUserType[];
     selectedSubjects: SemesterSubjectType[];
     setSelectedSubjects: React.Dispatch<
       React.SetStateAction<SemesterSubjectType[]>
@@ -27,6 +24,7 @@ const Subject = ({
   }) => {
     const [openSubjectPopUp, setOpenSubjectPopUp] = useState(false);
     const [checked, setChecked] = useState(false);
+    const {semesters,setSemesters}=useContext(SemesterContext);
   
     const handleChecked = () => {
       if (!checked) setSelectedSubjects((prevState) => [...prevState, subject]);
@@ -89,9 +87,7 @@ const Subject = ({
           <SubjectModal
             subject={subject}
             handleClose={() => setOpenSubjectPopUp(false)}
-            setSemesters={setSemesters}
             semester={semester}
-            semesters={semesters}
           />
         )}
       </>

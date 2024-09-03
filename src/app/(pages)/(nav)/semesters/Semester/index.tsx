@@ -1,11 +1,13 @@
+import { SemesterContext } from "@/app/context/SemesterContext";
 import { SemesterUserType } from "@/types/semester";
 import { SemesterSubjectType } from "@/types/semesterSubject";
 import { Droppable } from "@hello-pangea/dnd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ErrorPopUp from "../ErrorPopUp";
 import Subject from "./Subject";
 import { default as getNewFinishedSemestersSubjects } from "./util/getNewFinishedSemesterSubjects";
 import getNewNotFinishedSemesterSubjects from "./util/getNewNotFinishedSubjects";
+import OptionalSubjectBox from "./OptionalSubjectBox";
 
 type ErrorType = {
   text: string;
@@ -15,14 +17,10 @@ type ErrorType = {
 const Semester = ({
   semester,
   index,
-  setSemesters,
-  semesters,
   hideSubjects,
 }: {
   semester: SemesterUserType;
   index: number;
-  setSemesters: React.Dispatch<React.SetStateAction<SemesterUserType[]>>;
-  semesters: SemesterUserType[];
   hideSubjects: boolean;
 }) => {
   const [error, setError] = useState({} as ErrorType);
@@ -31,6 +29,7 @@ const Semester = ({
     [] as SemesterSubjectType[]
   );
   const [selectAllSubjects, setSelectAllSubjects] = useState(false);
+  const { semesters, setSemesters } = useContext(SemesterContext);
 
   const handleFinishAllSubjects = () => {
     setSemesters((prevState) =>
@@ -131,21 +130,13 @@ const Semester = ({
                         subject={subject}
                         index={index}
                         key={subject.id}
-                        setSemesters={setSemesters}
                         semester={semester}
                         selecting={selectingSubjects}
-                        semesters={semesters}
                         selectedSubjects={selectedSubjects}
                       />
                     );
                   })}
-                {((semester.subjects.every((subject) => subject.finished) &&
-                  hideSubjects) ||
-                  semester.subjects.length === 0) && (
-                  <h2 className="font-bold">
-                    Nenhum componente para exibir...
-                  </h2>
-                )}
+                  <OptionalSubjectBox/>
               </div>
               {provided.placeholder}
             </div>
