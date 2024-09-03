@@ -32,12 +32,19 @@ const Semester = ({
   );
   const [selectAllSubjects, setSelectAllSubjects] = useState(false);
 
- 
   const handleFinishAllSubjects = () => {
     setSemesters((prevState) =>
       prevState.map((oldSemester) => {
         if (oldSemester.id === semester.id) {
-          return { ...oldSemester, subjects: getNewFinishedSemestersSubjects(oldSemester, selectedSubjects,semesters,setError) };
+          return {
+            ...oldSemester,
+            subjects: getNewFinishedSemestersSubjects(
+              oldSemester,
+              selectedSubjects,
+              semesters,
+              setError
+            ),
+          };
         } else {
           return oldSemester;
         }
@@ -48,22 +55,26 @@ const Semester = ({
     setSelectingSubjects(false);
   };
 
-
   const handleNotFinishedSubjects = () => {
-    const newSubjects= getNewNotFinishedSemesterSubjects(semester, selectedSubjects,semesters,setError);
+    const newSubjects = getNewNotFinishedSemesterSubjects(
+      semester,
+      selectedSubjects,
+      semesters,
+      setError
+    );
     setSemesters((prevState) =>
-    prevState.map((oldSemester) => {
-      if (oldSemester.id === semester.id) {
-        return { ...oldSemester, subjects:newSubjects };
-      } else {
-        return oldSemester;
-      }
-    })
-  );
-  setSelectedSubjects([]);
-  setSelectAllSubjects(false);
-  setSelectingSubjects(false);
-  }
+      prevState.map((oldSemester) => {
+        if (oldSemester.id === semester.id) {
+          return { ...oldSemester, subjects: newSubjects };
+        } else {
+          return oldSemester;
+        }
+      })
+    );
+    setSelectedSubjects([]);
+    setSelectAllSubjects(false);
+    setSelectingSubjects(false);
+  };
 
   useEffect(() => {
     if (selectAllSubjects) {
@@ -82,12 +93,27 @@ const Semester = ({
       >
         {(provided) => (
           <div className="px-2 flex flex-col border-b-[1px] border-black pb-5 gap-2 min-h-[200px] justify-center">
-            <button
-              className=" self-start px-1 border-b-[1px] border-black hover:scale-[1.05] duration-300"
-              onClick={() => setSelectingSubjects((prevState) => !prevState)}
-            >
-              Selecionar
-            </button>
+            <div className="flex self-end flex-col items-end gap-2">
+              <button
+                className="px-1 underline underline-offset-4 hover:scale-[1.05] duration-300 w-fit"
+                onClick={() => setSelectingSubjects((prevState) => !prevState)}
+              >
+                Selecionar
+              </button>
+              {selectingSubjects && (
+                <div className="flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    id="selectAll"
+                    onChange={() =>
+                      setSelectAllSubjects((prevState) => !prevState)
+                    }
+                    checked={selectAllSubjects}
+                  />
+                  <label htmlFor="selectAll">Selecionar todos</label>
+                </div>
+              )}
+            </div>
 
             <div
               ref={provided.innerRef}
@@ -124,34 +150,23 @@ const Semester = ({
               {provided.placeholder}
             </div>
             {selectingSubjects && (
-              <div className="self-end flex justify-between w-full">
-                <div className="flex items-center gap-1">
-                  <input
-                    type="checkbox"
-                    id="selectAll"
-                    onChange={() =>
-                      setSelectAllSubjects((prevState) => !prevState)
-                    }
-                    checked={selectAllSubjects}
-                  />
-                  <label htmlFor="selectAll">Selecionar todos</label>
-                </div>
-                <div className="flex flex-col">
+              <div className="self-end flex flex-col gap-1">
                 <button
                   className="border-black border-b-[1px] px-1  hover:scale-[1.05] duration-300"
                   onClick={handleFinishAllSubjects}
-                  >
-                  Marcar como concluido{selectedSubjects.length <= 1 ? "" : "s"}{" "}
-                  ({selectedSubjects.length})
+                >
+                  Marcar como concluido
+                  {selectedSubjects.length <= 1 ? "" : "s"} (
+                  {selectedSubjects.length})
                 </button>
                 <button
                   className="border-black border-b-[1px] px-1  hover:scale-[1.05] duration-300"
                   onClick={handleNotFinishedSubjects}
-                  >
-                  Marcar não como concluido{selectedSubjects.length <= 1 ? "" : "s"}{" "}
-                  ({selectedSubjects.length})
+                >
+                  Marcar não como concluido
+                  {selectedSubjects.length <= 1 ? "" : "s"} (
+                  {selectedSubjects.length})
                 </button>
-                  </div>
               </div>
             )}
           </div>
@@ -168,4 +183,3 @@ const Semester = ({
 };
 
 export default Semester;
-
