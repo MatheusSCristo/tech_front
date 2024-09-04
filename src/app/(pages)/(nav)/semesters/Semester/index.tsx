@@ -154,7 +154,7 @@ const Semester = ({
                   className="border-black border-b-[1px] px-1  hover:scale-[1.05] duration-300"
                   onClick={handleNotFinishedSubjects}
                 >
-                  Marcar não como concluido
+                  Marcar como não concluido
                   {selectedSubjects.length <= 1 ? "" : "s"} (
                   {selectedSubjects.length})
                 </button>

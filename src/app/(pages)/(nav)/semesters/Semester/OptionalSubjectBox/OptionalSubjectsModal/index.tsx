@@ -5,6 +5,7 @@ import { SemesterUserType } from "@/types/semester";
 import { SubjectType } from "@/types/subject";
 import { CircularProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
+import { v4 } from "uuid";
 import Table from "./Table";
 
 const OptionalSubjectsModal = ({
@@ -110,7 +111,7 @@ const OptionalSubjectsModal = ({
             subjects: [
               ...actualSemester.subjects,
               ...selectedSubjects.map((subject) => ({
-                id: subject.id,
+                id: v4(),
                 teacher: { id: "0", name: "Padrão", rating: [0] }, 
                 subject,
                 finished: false,
