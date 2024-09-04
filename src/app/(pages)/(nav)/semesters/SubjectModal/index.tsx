@@ -2,6 +2,7 @@ import { SemesterContext } from "@/app/context/SemesterContext";
 import { SemesterUserType } from "@/types/semester";
 import { SemesterSubjectType } from "@/types/semesterSubject";
 import { TeacherType } from "@/types/teacher";
+import { Rating } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import ErrorPopUp from "../ErrorPopUp";
 
@@ -30,6 +31,7 @@ const SubjectModal = ({
   const [preRequisiteError, setPreRequisiteError] =
     useState<PreRequisiteErrorType>({} as PreRequisiteErrorType);
 
+  const [ratingValue,setRatingValue] = useState<number>(subject.teacher.rating.reduce((acc,cur)=>acc+cur,0)/subject.teacher.rating.length);
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const teacher = teachers.find((teacher) => teacher.name === teacherName);
@@ -39,7 +41,7 @@ const SubjectModal = ({
     const newSubject = {
       ...subject,
       finished: finished,
-      teacher: teacher,
+      teacher: {...teacher,rating:[...teacher.rating,ratingValue]},
     };
     const newSemesterSubjects = semester.subjects.map((semesterSubject) =>
       semesterSubject.id === newSubject.id ? newSubject : semesterSubject
@@ -106,6 +108,7 @@ const SubjectModal = ({
             const newSubject = {
               ...subject,
               finished: false,
+              teacher:{...subject.teacher,rating:subject.teacher.rating.slice(0,-1)}
             };
             newSemesters = newSemesters.map((semester) => {
               return {
@@ -223,6 +226,11 @@ const SubjectModal = ({
                 ))}
               </select>
             </div>
+           {finished && <div className="flex gap-3">
+              <h2>Avaliar professor:</h2>
+              <Rating name="rating" defaultValue={0} value={ratingValue} onChange={(e,newValue)=>{setRatingValue(newValue || 0)}}/>
+
+            </div>}
             <button
               type="submit"
               className="border border-black shadow-xl px-3 py-1 w-fit rounded self-center"

@@ -21,9 +21,14 @@ const getTeachers = async () => {
       return;
     }
     const data: TeacherType[] = await response.json();
-    return data.sort((a, b) => b.rating - a.rating);
+    
+    return data.sort((a, b) => getAverageRating(b.rating) - getAverageRating(a.rating));
   }
 };
+
+const getAverageRating=(rating:number[])=>{
+  return rating.reduce((acc,cur)=>acc+cur,0)/rating.length
+}
 
 const TeacherDashboard = async () => {
   const teachers: TeacherType[] | undefined = await getTeachers();
@@ -50,7 +55,7 @@ const Teacher = ({ teacher }: { teacher: TeacherType }) => {
       </span>
       <Rating
         name="rating"
-        value={teacher.rating}
+        value={getAverageRating(teacher.rating) }
         readOnly
         precision={0.5}
         size="medium"
