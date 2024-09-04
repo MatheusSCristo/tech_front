@@ -3,6 +3,7 @@ import { SemesterContext } from "@/app/context/SemesterContext";
 import { UserContext } from "@/app/context/UserContext";
 import { SemesterUserType } from "@/types/semester";
 import { SemesterSubjectType } from "@/types/semesterSubject";
+import { SubjectType } from "@/types/subject";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { CircularProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
@@ -93,6 +94,24 @@ const Semesters = () => {
     return true;
   };
 
+  const checkSubjectCoRequisiteIsPaid = (semesters:SemesterUserType[],destinationSemester:SemesterUserType,subject:SubjectType)=>{
+    const coRequistesNotPaid=getSubjectCoRequisites(
+      semesters,
+      destinationSemester,
+      subject,
+    );
+    if(coRequistesNotPaid.length>0){
+      setSubjectError({
+        option: "",
+        error: `Não é possível mover ${subject.name} para o semestre desejado, pois ${coRequistesNotPaid[0].name} é co-requisito e ainda não foi concluido.`,
+      });
+      setOpenPopUp(true);
+      return false;
+    }
+    return true;
+  }
+
+
   const handleOnDragEnd = (result: DropResult) => {
     const { draggableId, destination } = result;
 
@@ -121,23 +140,18 @@ const Semesters = () => {
         destinationSemester
       ) &&
       checkSubjectItsCoRequisiteOf(
-        setSemesters,
         semesters,
         destinationSemester,
         subject.subject,
         setSubjectError,
         setOpenPopUp,
-        setResponseFunction
       ) &&
-      getSubjectCoRequisites(
-        setSemesters,
+      checkSubjectCoRequisiteIsPaid(
         semesters,
         destinationSemester,
-        subject.subject,
-        setSubjectError,
-        setOpenPopUp,
-        setResponseFunction
-      );
+        subject.subject
+      )
+      
 
     if (!canMoveSubject) return;
 

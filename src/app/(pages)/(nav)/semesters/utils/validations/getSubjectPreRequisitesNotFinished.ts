@@ -24,6 +24,18 @@ export const getSubjectPreRequisitesNotFinished = (
         })
       )
   );
+  const coRequistesNotCompleted = subjectPreRequisites.filter(
+    (subjectPreRequiste) =>
+      semestersBeforeIncludingDestinationSemester.some((semester) => 
+        semester.subjects.some((semesterSubject) => {
+          if(semester.semester < destinationSemesters.semester) return false;
+          return (
+            semesterSubject.subject.id === subjectPreRequiste.id &&
+            !semesterSubject.finished  
+          );
+        })
+      )
+  );
   
   return preRequisitesNotCompleted;
 };

@@ -154,7 +154,7 @@ const SubjectModal = ({
   return (
     <>
       <section className="z-10 fixed top-0 left-0 bg-[#edededae] flex flex-col justify-center items-center w-full h-full">
-        <div className="bg-white border border-black rounded relative w-[30%] flex flex-col items-center pb-5 pt-3 px-2 gap-3">
+        <div className="bg-white border border-black rounded relative w-[30%] flex flex-col  pb-5 pt-3 px-2 gap-3">
           <span
             className="absolute top-1 right-2 cursor-pointer"
             onClick={handleClose}
@@ -172,7 +172,7 @@ const SubjectModal = ({
               <strong>Carga horária:</strong> {subject.subject.ch}
             </h2>
             <h2 className="w-full">
-              <strong>Descrição:</strong> {subject.subject.description}
+              <strong>Descrição:</strong> {subject.subject.description || "Sem descrição"}
             </h2>
             {subject.subject.pre_requisites.length > 0 && (
               <>
