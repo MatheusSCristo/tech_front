@@ -152,12 +152,15 @@ const Semesters = () => {
   return (
     <>
       <div className="bg-[#ffffffd6] m-10  flex flex-col items-center p-5 rounded-xl gap-10">
-        <h1 className="text-[2.5em]">Semestres</h1>
+        <div className="w-full relative flex justify-center">
+          <h1 className="text-[2.5em]">Semestres</h1>
+          <button className="absolute right-2 border-b-[1px] border-black font-bold text-lg hover:scale-[1.05] duration-300,mm ">Salvar alterações</button>
+        </div>
         <button
           className="self-end px-1 border-b-[1px] border-black hover:scale-[1.05] duration-300"
           onClick={() => setHideSubjects((prevState) => !prevState)}
         >
-          {hideSubjects?"Mostrar":"Esconder"} componentes concluidos
+          {hideSubjects ? "Mostrar" : "Esconder"} componentes concluidos
         </button>
         <div className="flex flex-col gap-5 min-h-screen w-full">
           {semesters.length > 0 && (
