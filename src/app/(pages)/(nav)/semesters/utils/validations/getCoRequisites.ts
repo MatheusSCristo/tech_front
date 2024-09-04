@@ -35,7 +35,7 @@ export const getSubjectCoRequisites = (
 
     setSubjectError({
       option: "Deseja mover os co-requisitos também?",
-      error: `Não é possível mover esta matéria para o semestre desejado,pois ${coRequisitesNotPaid?.name} é co-requisito.`,
+      error: `Não é possível mover ${subject.name}  para o semestre desejado,pois ${coRequisitesNotPaid?.name} é co-requisito.`,
     });
     if (coRequisitesNotPaid) {
       const checkIfCoRequisiteIsPreRequisiteOnNewSemester = (
@@ -53,7 +53,7 @@ export const getSubjectCoRequisites = (
         if (itsPreRequisiteOfSubjectOnSemester) {
           setSubjectError({
             option: "",
-            error: `Não é possível mover esta matéria para o semestre desejado,pois ${itsPreRequisiteOfSubjectOnSemester.subject.name} possui ela como pré-requisito.`,
+            error: `Não é possível mover ${subject.name} para o semestre desejado,pois ${itsPreRequisiteOfSubjectOnSemester.subject.name} possui ela como pré-requisito.`,
           });
           setOpenPopUp(true);
         }
@@ -80,7 +80,7 @@ export const getSubjectCoRequisites = (
         ) {
           setSubjectError({
             option: "",
-            error: `Não é possível mover esta matéria para o semestre desejado,pois ${preRequisitesNotPaid.name} não foi concluida.`,
+            error: `Não é possível mover ${subject.name} para o semestre desejado,pois ${preRequisitesNotPaid.name} não foi concluida.`,
           });
           setOpenPopUp(true);
           return false;

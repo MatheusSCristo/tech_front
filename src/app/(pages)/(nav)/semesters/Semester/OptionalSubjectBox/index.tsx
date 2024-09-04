@@ -31,9 +31,3 @@ const OptionalSubjectBox = ({ semester }: { semester: SemesterUserType }) => {
 
 export default OptionalSubjectBox;
 
-
-
-
-//ADICIONAR MATERIA OPTATIVA
-//BACKEND ENDPOINT MATERIAS OPTATIVAS
-//BACKEND ENCRYPT EMAIL ON GOOGLE LOGIN

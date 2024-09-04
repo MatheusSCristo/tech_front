@@ -45,9 +45,10 @@ const SubjectModal = ({
       semesterSubject.id === newSubject.id ? newSubject : semesterSubject
     );
     if (!checkIfPreRequisitesAreFinished() && finished) return;
-   
+
     if (!finished)
-      if(!checkIfOtherSubjectsThatHaveThisSubjectAsPreRequisiteAreFinished()) return;
+      if (!checkIfOtherSubjectsThatHaveThisSubjectAsPreRequisiteAreFinished())
+        return;
 
     setSemesters((prevState) =>
       prevState.map((oldSemester) => {
@@ -58,7 +59,6 @@ const SubjectModal = ({
         }
       })
     );
-
 
     handleClose();
   };
@@ -76,7 +76,7 @@ const SubjectModal = ({
     );
     if (preRequisitesNotFinished.length > 0) {
       setPreRequisiteError({
-        text: `Não é possível finalizar esse componente pois ${preRequisitesNotFinished[0].name} é pre requisito e ainda não foi concluido.`,
+        text: `Não é possível finalizar ${subject.subject.name} pois ${preRequisitesNotFinished[0].name} é pre requisito e ainda não foi concluido.`,
         status: true,
       });
       setFinished(false);
@@ -100,8 +100,9 @@ const SubjectModal = ({
 
       const responseFuntion = () => {
         let newSemesters = semesters;
-        otherSubjectsThatHaveThisSubjectAsPreRequisiteFinished.concat(subject).forEach(
-          (subject) => {
+        otherSubjectsThatHaveThisSubjectAsPreRequisiteFinished
+          .concat(subject)
+          .forEach((subject) => {
             const newSubject = {
               ...subject,
               finished: false,
@@ -116,8 +117,7 @@ const SubjectModal = ({
                 }),
               };
             });
-          }
-        );
+          });
         setSemesters(newSemesters);
         handleClose();
         setPreRequisiteError({} as PreRequisiteErrorType);
@@ -237,9 +237,10 @@ const SubjectModal = ({
           error={preRequisiteError.text}
           option={preRequisiteError.option}
           responseFunction={preRequisiteError.responseFunction}
-          handleClosePopUp={() =>
-            setPreRequisiteError({} as PreRequisiteErrorType)
-          }
+          handleClosePopUp={() => {
+            handleClose();
+            setPreRequisiteError({} as PreRequisiteErrorType);
+          }}
         />
       )}
     </>

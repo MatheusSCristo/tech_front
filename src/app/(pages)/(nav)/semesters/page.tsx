@@ -67,7 +67,7 @@ const Semesters = () => {
     if (preRequisitesNotCompleted.length > 0) {
       setSubjectError({
         option: "",
-        error: `Não é possível mover esta matéria para o semestre desejado, pois ${preRequisitesNotCompleted[0].name} é pré requisto e ainda não foi concluido.`,
+        error: `Não é possível mover ${subject.subject.name} para o semestre desejado, pois ${preRequisitesNotCompleted[0].name} é pré requisto e ainda não foi concluido.`,
       });
       setOpenPopUp(true);
       return false;
@@ -85,7 +85,7 @@ const Semesters = () => {
     if (preRequisitesOfSubjectOnDestinationSemester) {
       setSubjectError({
         option: "",
-        error: `Não é possível mover esta matéria para o semestre desejado, pois ${preRequisitesOfSubjectOnDestinationSemester.subject.name} no semestre de destino exige esta como pré-requisito.`,
+        error: `Não é possível mover ${subject.subject.name} para o semestre desejado, pois ${preRequisitesOfSubjectOnDestinationSemester.subject.name} no semestre de destino exige esta como pré-requisito.`,
       });
       setOpenPopUp(true);
       return false;

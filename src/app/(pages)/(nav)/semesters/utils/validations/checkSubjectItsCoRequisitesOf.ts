@@ -31,7 +31,7 @@ export const checkSubjectItsCoRequisiteOf = (
   if (subjectsItsCoRequisitesOf.length > 0) {
     setSubjectError({
       option: "Deseja mover as matérias que a tem co requisito também?",
-      error: `A matéria não pode ser movida ,pois ${subjectsItsCoRequisitesOf[0].subject.name} possui ela como co-requisito.`,
+      error: `A matéria ${subject.name} não pode ser movida ,pois ${subjectsItsCoRequisitesOf[0].subject.name} possui ela como co-requisito.`,
     });
     const responseFunction = () => {
       const semesterSubjects = semesters.flatMap((item) => item.subjects);
