@@ -16,8 +16,9 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const user = localStorage.getItem("user");
     
     if (user) {
-      setUser(JSON.parse(user));
-      setSemesters(JSON.parse(user).semesters);
+      const newUser:UserType = JSON.parse(user);
+      setUser(newUser);
+      setSemesters(newUser.semesters.sort((a,b)=>a.semester-b.semester));
     }
   }, []);
   useEffect(() => {
