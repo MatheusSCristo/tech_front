@@ -23,8 +23,8 @@ const SemesterDashboard = () => {
         className="w-full"
         navigation
       >
-        {semesters?.map((semester, index) => (
-          <SwiperSlide className="!flex !flex-col items-center">
+        {semesters?.map((semester) => (
+          <SwiperSlide className="!flex !flex-col items-center" key={semester.id}>
             <h2 className="text-[1.5em]">{semester.semester}°</h2>
             <div className="flex-wrap flex flex-row justify-center">
               {semester.subjects.map((subject) => {
@@ -33,6 +33,7 @@ const SemesterDashboard = () => {
                 );
                 return (
                   <div
+                  key={subject.id}
                     className={`${
                       subject.finished ? "opacity-[50%]" : "opacity-1"
                     }  overflow-hidden ${
