@@ -36,7 +36,7 @@ export const SubjectModal = ({
             <h2 className="font-bold text-lg">Pré requisitos:</h2>
             <div className="flex flex-col">
               {subject.pre_requisites.map((preRequisite) => (
-                <span className="text-md text-[#4e4e4ed2]">
+                <span className="text-md text-[#4e4e4ed2]" key={preRequisite.id}>
                   {preRequisite.id + " - " + preRequisite.name}
                 </span>
               ))}
@@ -46,7 +46,7 @@ export const SubjectModal = ({
             <h2 className="font-bold text-lg">Co requisitos:</h2>
             <div className="flex flex-col">
               {subject.co_requisites.map((coRequisites) => (
-                <span className="text-md text-[#4e4e4ed2]">
+                <span className="text-md text-[#4e4e4ed2]" key={coRequisites.id}>
                   {coRequisites.id + " - " + coRequisites.name}
                 </span>
               ))}
