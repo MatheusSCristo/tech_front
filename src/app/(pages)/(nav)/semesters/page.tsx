@@ -10,11 +10,18 @@ import { useContext, useEffect, useState } from "react";
 import ErrorPopUp from "./ErrorPopUp";
 import Semester from "./Semester";
 import { handleSwapSubjects } from "./utils/handleSwapSubjects";
+import handleResetSemesters from "./utils/resetSemester";
 import handleSaveSemester from "./utils/saveSemesters";
 import { checkSubjectItsCoRequisiteOf } from "./utils/validations/checkSubjectItsCoRequisitesOf";
 import { getSubjectCoRequisites } from "./utils/validations/getCoRequisites";
 import { getPrerequisiteDependencies } from "./utils/validations/getPrerequisiteDependencies ";
 import { getSubjectPreRequisitesNotFinished } from "./utils/validations/getSubjectPreRequisitesNotFinished";
+
+
+export type SemesterMessageType={
+  message:string;
+  error:boolean;
+}
 
 const Semesters = () => {
   const { user } = useContext(UserContext);
@@ -29,8 +36,9 @@ const Semesters = () => {
   const [responseFunction, setResponseFunction] = useState<() => void>(
     () => {}
   );
-
   const [hideSubjects, setHideSubjects] = useState(false);
+  const [semesterMessage, setSemesterMessage] = useState({} as SemesterMessageType);
+
 
   useEffect(() => {
     const getSemesters = async () => {
@@ -95,13 +103,17 @@ const Semesters = () => {
     return true;
   };
 
-  const checkSubjectCoRequisiteIsPaid = (semesters:SemesterUserType[],destinationSemester:SemesterUserType,subject:SubjectType)=>{
-    const coRequistesNotPaid=getSubjectCoRequisites(
+  const checkSubjectCoRequisiteIsPaid = (
+    semesters: SemesterUserType[],
+    destinationSemester: SemesterUserType,
+    subject: SubjectType
+  ) => {
+    const coRequistesNotPaid = getSubjectCoRequisites(
       semesters,
       destinationSemester,
-      subject,
+      subject
     );
-    if(coRequistesNotPaid.length>0){
+    if (coRequistesNotPaid.length > 0) {
       setSubjectError({
         option: "",
         error: `Não é possível mover ${subject.name} para o semestre desejado, pois ${coRequistesNotPaid[0].name} é co-requisito e ainda não foi concluido.`,
@@ -110,8 +122,7 @@ const Semesters = () => {
       return false;
     }
     return true;
-  }
-
+  };
 
   const handleOnDragEnd = (result: DropResult) => {
     const { draggableId, destination } = result;
@@ -145,14 +156,13 @@ const Semesters = () => {
         destinationSemester,
         subject.subject,
         setSubjectError,
-        setOpenPopUp,
+        setOpenPopUp
       ) &&
       checkSubjectCoRequisiteIsPaid(
         semesters,
         destinationSemester,
         subject.subject
-      )
-      
+      );
 
     if (!canMoveSubject) return;
 
@@ -169,7 +179,25 @@ const Semesters = () => {
       <div className="bg-[#ffffffd6] m-10  flex flex-col items-center p-5 rounded-xl gap-10">
         <div className="w-full relative flex justify-center">
           <h1 className="text-[2.5em]">Semestres</h1>
-          <button className="absolute right-2 border-b-[1px] border-black font-bold text-lg hover:scale-[1.05] duration-300,mm " onClick={()=>handleSaveSemester(user?.id,semesters)}>Salvar alterações</button>
+          <div className="absolute right-2 flex flex-col ">
+            <button
+              className="border-b-[1px] border-black font-bold text-lg hover:scale-[1.05] duration-300,mm "
+              onClick={() => handleSaveSemester(user?.id || "", semesters,setSemesters,setSemesterMessage)}
+            >
+              Salvar alterações
+            </button>
+            <button
+              className="border-b-[1px] border-black font-bold text-lg hover:scale-[1.05] duration-300,mm "
+              onClick={() => handleResetSemesters(user?.id || "",setSemesters,setSemesterMessage)}
+            >
+              Resetar semestres
+            </button>
+            {semesterMessage.message && (
+              <div className={`text-center ${semesterMessage.error ? "text-red-500" : "text-green-500"}`}>
+                {semesterMessage.message}
+              </div>
+            )}
+          </div>
         </div>
         <button
           className="self-end px-1 border-b-[1px] border-black hover:scale-[1.05] duration-300"

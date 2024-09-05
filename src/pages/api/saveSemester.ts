@@ -10,7 +10,7 @@ export default async function handler(
     const cookies = req.cookies;
     const accessToken = cookies.access_token;
     const userId = req.query.id as string;
-    const body:SemesterUserType[]=req.body;
+    const body: SemesterUserType[] = req.body;
     try {
       if (accessToken) {
         const response = await fetchWithAuth(
@@ -20,10 +20,11 @@ export default async function handler(
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
           },
           accessToken
         );
+
         if (!response.ok) {
           const errorData = await response.json();
           res
