@@ -11,11 +11,13 @@ const UserContext = createContext({} as UserContextType);
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserType | null>(null);
-  const { semesters } = useContext(SemesterContext);
+  const { setSemesters } = useContext(SemesterContext);
   useEffect(() => {
     const user = localStorage.getItem("user");
+    
     if (user) {
       setUser(JSON.parse(user));
+      setSemesters(JSON.parse(user).semesters);
     }
   }, []);
   useEffect(() => {
