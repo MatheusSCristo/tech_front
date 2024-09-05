@@ -49,7 +49,6 @@ const OptionalSubjectsModal = ({
             setShowSubjects(filteredData);
             return;
           } catch (err) {
-            console.log(err);
           } finally {
             setLoading(false);
           }

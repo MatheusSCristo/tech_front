@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
         try {
           const token = account.id_token;
           const response = await fetch(
-            `http://localhost:8080/auth/google/${token}`,
+            process.env.API_BASE_URL + `/auth/google/${token}`,
             {
               method: "GET",
               headers: {

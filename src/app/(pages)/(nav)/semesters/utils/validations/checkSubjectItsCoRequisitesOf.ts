@@ -25,7 +25,6 @@ export const checkSubjectItsCoRequisiteOf = (
       (subject) => subject.subject.id == subjectsItsCoRequisitesOf[0].subject.id
     )
   );
-  console.log(destinationSemester.semester, semestersWithSubject[0].semester);
 
   if (semestersWithSubject[0].semester < destinationSemester.semester) {
     setSubjectError({

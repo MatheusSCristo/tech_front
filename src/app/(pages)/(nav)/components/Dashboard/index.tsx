@@ -8,8 +8,28 @@ import { useContext, useEffect, useState } from "react";
 const Dashboard = () => {
   const { user } = useContext(UserContext);
   const [subjects, setSubjects] = useState<SubjectType[]>([]);
-  const mandatorySubjectsFinished = user?.semesters.flatMap((semester) =>semester.subjects).filter((subject)=>subject.finished);
+  const mandatorySubjectsFinished = user?.semesters
+    .flatMap((semester) => semester.subjects)
+    .filter(
+      (subject) =>
+        subject.finished &&
+        user.structure.mandatory_subjects.some(
+          (mandatorySubject) => mandatorySubject.id == subject.subject.id
+        )
+    );
 
+  const mandatorySubjects =  Array.from(
+    new Set(user?.structure.mandatory_subjects.map((subject) => JSON.stringify(subject)))).map((str) => JSON.parse(str));
+
+  const optionalSubjectsFinished = user?.semesters
+    .flatMap((semester) => semester.subjects)
+    .filter(
+      (subject) =>
+        subject.finished &&
+        user.structure.mandatory_subjects.every(
+          (optionalSubject) => optionalSubject.id != subject.subject.id
+        )
+    );
 
   useEffect(() => {
     const getSubjects = async () => {
@@ -58,13 +78,13 @@ const Dashboard = () => {
           <div className="w-full ">
             <h3>
               Matérias obrigátorias:{mandatorySubjectsFinished?.length}/
-              {user?.structure.mandatory_subjects.length}
+              {mandatorySubjects.length}
             </h3>
             <LinearProgress
               variant="determinate"
               value={
                 mandatorySubjectsFinished?.length ||
-                0 / user?.structure.mandatory_subjects.length
+                0 / mandatorySubjects.length
               }
             />
           </div>
@@ -73,14 +93,14 @@ const Dashboard = () => {
         {user && (
           <div className="w-full">
             <h3>
-              Matérias optativas:{mandatorySubjectsFinished?.length}/
-              {subjects.length - user?.structure.optional_subjects.length}
+              Matérias optativas:{optionalSubjectsFinished?.length}/
+              {subjects.length - mandatorySubjects.length}
             </h3>
             <LinearProgress
               variant="determinate"
               value={
                 mandatorySubjectsFinished?.length ||
-                0 / user?.structure.mandatory_subjects.length
+                0 / mandatorySubjects.length
               }
             />
           </div>

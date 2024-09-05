@@ -13,7 +13,7 @@ export default async function handler(
     try {
       if (accessToken) {
         const response = await fetchWithAuth(
-          `http://localhost:8080/semester_user/getAllByUserId/${id}`,
+          process.env.API_BASE_URL + `/semester_user/getAllByUserId/${id}`,
           {
             method: "GET",
             headers: {

@@ -8,7 +8,7 @@ const getTeachers = async () => {
   const accessToken = cookieStore.get("access_token")?.value;
   if (accessToken) {
     const response = await fetchWithAuth(
-      "http://localhost:8080/teacher",
+      process.env.API_BASE_URL + "/teacher",
       {
         method: "GET",
         headers: {

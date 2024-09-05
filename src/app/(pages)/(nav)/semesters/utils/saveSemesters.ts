@@ -1,4 +1,5 @@
 import { SemesterUserType } from "@/types/semester";
+import { UserType } from "@/types/user";
 import { Dispatch, SetStateAction } from "react";
 import { SemesterMessageType } from "../page";
 
@@ -6,7 +7,8 @@ const handleSaveSemester = async (
   userId: string,
   semesters: SemesterUserType[],
   setSemesters: Dispatch<SetStateAction<SemesterUserType[]>>,
-  setSemesterMessage: Dispatch<SetStateAction<SemesterMessageType>>
+  setSemesterMessage: Dispatch<SetStateAction<SemesterMessageType>>,
+  setUser: React.Dispatch<React.SetStateAction<UserType | null>>
 ) => {
   const requestBody = semesters.map((semester) => {
     return {
@@ -35,6 +37,7 @@ const handleSaveSemester = async (
     }
     const data: SemesterUserType[] = await response.json();
     setSemesters(data.sort((a, b) => a.semester - b.semester));
+    setUser((prevState) => ({...prevState, semesters: data} as UserType));
     setSemesterMessage({
       error: false,
       message: "Semestres salvo com sucesso",

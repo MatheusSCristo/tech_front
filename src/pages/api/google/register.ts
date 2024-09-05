@@ -19,7 +19,7 @@ export default async function handler(
     };
     try {
       const response = await fetch(
-        `http://localhost:8080/auth/google/register`,
+        process.env.API_BASE_URL + `/auth/google/register`,
         {
           method: "POST",
           headers: {

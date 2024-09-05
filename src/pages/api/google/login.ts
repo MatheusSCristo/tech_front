@@ -16,7 +16,7 @@ export default async function handler(
       const session = await getServerSession(req, res, authOptions);
       const email = session?.user?.email;
       const response = await fetch(
-        `http://localhost:8080/auth/google/validate/${email}`,
+        process.env.API_BASE_URL + `/auth/google/validate/${email}`,
         {
           method: "GET",
           headers: {

@@ -1,5 +1,6 @@
 import { UserType } from "@/types/user";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { SemesterContext } from "./SemesterContext";
 
 type UserContextType = {
   user: UserType | null;
@@ -10,16 +11,18 @@ const UserContext = createContext({} as UserContextType);
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserType | null>(null);
+  const { semesters } = useContext(SemesterContext);
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
       setUser(JSON.parse(user));
     }
-  },[]);
+  }, []);
   useEffect(() => {
-    if(user)
-    localStorage.setItem("user", JSON.stringify(user));
+    if (user) localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
+
+
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}

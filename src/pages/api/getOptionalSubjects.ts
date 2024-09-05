@@ -13,7 +13,7 @@ export default async function handler(
     try {
       if (accessToken) {
         const response = await fetchWithAuth(
-          `http://localhost:8080/subject/findOptionalSubjects/${structureId}`,
+          process.env.API_BASE_URL + `/subject/findOptionalSubjects/${structureId}`,
           {
             method: "GET",
             headers: {

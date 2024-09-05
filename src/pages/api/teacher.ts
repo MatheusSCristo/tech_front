@@ -12,7 +12,7 @@ export default async function handler(
         const accessToken = cookies.access_token;
       if (accessToken) {
         const response = await fetchWithAuth(
-          "http://localhost:8080/teacher",
+          process.env.API_BASE_URL + "/teacher",
           {
             method: "GET",
             headers: {
@@ -22,7 +22,6 @@ export default async function handler(
           accessToken
         );
         if (!response.ok) {
-          console.log("error")
           return;
         }
         const data: TeacherType[] = await response.json();

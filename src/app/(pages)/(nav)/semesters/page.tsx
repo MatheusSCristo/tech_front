@@ -24,7 +24,7 @@ export type SemesterMessageType={
 }
 
 const Semesters = () => {
-  const { user } = useContext(UserContext);
+  const { user,setUser } = useContext(UserContext);
   const { semesters, setSemesters } = useContext(SemesterContext);
   const [error, setError] = useState(false);
   const subjects = semesters?.flatMap((item) => item.subjects);
@@ -182,13 +182,13 @@ const Semesters = () => {
           <div className="absolute right-2 flex flex-col ">
             <button
               className="border-b-[1px] border-black font-bold text-lg hover:scale-[1.05] duration-300,mm "
-              onClick={() => handleSaveSemester(user?.id || "", semesters,setSemesters,setSemesterMessage)}
+              onClick={() => handleSaveSemester(user?.id || "", semesters,setSemesters,setSemesterMessage,setUser)}
             >
               Salvar alterações
             </button>
             <button
               className="border-b-[1px] border-black font-bold text-lg hover:scale-[1.05] duration-300,mm "
-              onClick={() => handleResetSemesters(user?.id || "",setSemesters,setSemesterMessage)}
+              onClick={() => handleResetSemesters(user?.id || "",setSemesters,setSemesterMessage,setUser)}
             >
               Resetar semestres
             </button>
