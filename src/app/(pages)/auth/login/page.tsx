@@ -1,5 +1,6 @@
 "use client";
 import TextInput from "@/app/components/TextInput";
+import { SemesterContext } from "@/app/context/SemesterContext";
 import { UserContext } from "@/app/context/UserContext";
 import {
   loginRequestSchema,
@@ -18,6 +19,7 @@ import { MdEmail, MdLock } from "react-icons/md";
 
 const Login = () => {
   const { setUser } = useContext(UserContext);
+  const { setSemesters } = useContext(SemesterContext);
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -52,6 +54,7 @@ const Login = () => {
       }
       const result: UserType = await response.json();
       setUser(result);
+      setSemesters(result.semesters);
       router.push("/");
     } catch (error) {
       setError("Erro ao conectar com o servidor");
@@ -89,6 +92,7 @@ const Login = () => {
         }
         const result: UserType = await response.json();
         setUser(result);
+        setSemesters(result.semesters);
       } catch (error) {
         setError("Erro ao conectar com o servidor");
       } finally {

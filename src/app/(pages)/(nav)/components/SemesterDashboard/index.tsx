@@ -38,7 +38,7 @@ const SemesterDashboard = () => {
                       subject.finished ? "opacity-[50%]" : "opacity-1"
                     }  overflow-hidden ${
                       isMandatory ? "bg-mandatoryBlue" : "bg-optionalGray"
-                    }  border border-black h-[200px] w-[20%] flex items-center justify-center rounded p-3 shadow-xl m-5 hover:scale-[1.05] duration-300
+                    }  border border-black h-[200px] flex-1  flex items-center justify-center rounded p-3 shadow-xl m-5 hover:scale-[1.05] duration-300
                   `}
                   >
                     <span className="text-center text-wrap truncate">

@@ -174,6 +174,7 @@ const Semesters = () => {
     setSemesters(updatedSemester);
   };
 
+
   return (
     <>
       <div className="bg-[#ffffffd6] m-10  flex flex-col items-center p-5 rounded-xl gap-10">
