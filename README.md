@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Gestor de Semestres de TI - Frontend
 
-## Getting Started
+Este é o frontend do projeto Gestor de Semestres de Tecnologia da Informação, uma aplicação que facilita o gerenciamento e organização dos semestres e disciplinas dos cursos de TI.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/11e73b8b-d5c5-42e4-8386-fb3a1112512e" alt="Preview da Aplicação" width="50%" height="50%" />
+</p>
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Tecnologias Utilizadas
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Next.js**: Framework React com renderização do lado do servidor e geração de páginas estáticas.
+- **TypeScript**: Superconjunto de JavaScript que adiciona tipagem estática.
+- **Tailwind CSS**: Framework CSS utilitário para estilização eficiente e responsiva.
+- **React Hook Form**: Biblioteca para lidar com formulários e validações de maneira simples e escalável.
+- **Zod**: Biblioteca de validação e parsing de esquemas, utilizada para garantir a integridade dos dados dos formulários.
+- **Bcrypt**: Utilizado para a criptografia de senhas e dados sensíveis.
+- **Hello Pangea (react-beautiful-dnd)**: Biblioteca para implementar a funcionalidade de drag and drop na organização das disciplinas.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Funcionalidades
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Gerenciamento de Semestres e Disciplinas**: Permite organizar e gerenciar disciplinas com base nos semestres.
+- **Validação de Formulários**: Utilização de React Hook Form e Zod para garantir que os dados de entrada estão corretos.
+- **Drag and Drop**: Funcionalidade de arrastar e soltar implementada com Hello Pangea para reorganizar as disciplinas entre semestres.
+- **Criptografia de Dados Sensíveis**: Utilização de bcrypt para garantir a segurança na manipulação de senhas.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
