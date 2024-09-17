@@ -32,7 +32,7 @@ export default async function handler(
         return;
       }
 
-      const data: Data = await response.json();
+      const data: Data = await response.json(); 
       res.setHeader(
         "Set-Cookie",
         `access_token=${data.access_token}; HttpOnly; Path=/; Max-Age=${

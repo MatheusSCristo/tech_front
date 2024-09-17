@@ -81,7 +81,6 @@ const Login = () => {
             "Content-Type": "application/json",
           },
         });
-        router.push("/");
         if (!response.ok) {
           setError(
             response.status == 500
@@ -93,6 +92,7 @@ const Login = () => {
         const result: UserType = await response.json();
         setUser(result);
         setSemesters(result.semesters);
+        router.push("/");
       } catch (error) {
         setError("Erro ao conectar com o servidor");
       } finally {
