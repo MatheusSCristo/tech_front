@@ -89,6 +89,7 @@ const Login = () => {
           );
           return;
         }
+        console.log("google")
         const result: UserType = await response.json();
         setUser(result);
         setSemesters(result.semesters);

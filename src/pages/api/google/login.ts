@@ -39,6 +39,8 @@ export default async function handler(
           60 * 60 * 24
         }; ${process.env.NODE_ENV === "production" ? "Secure;" : ""}`
       );
+      console.log(data.access_token)
+      console.log(res.getHeader("Set-Cookie"))
       res.status(response.status).json(data.user_data);
     } catch (error: any) {
       if (error.cause.code === "ECONNREFUSED") {
