@@ -1,3 +1,4 @@
+import cookie from "cookie";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -32,12 +33,15 @@ export default async function handler(
         return;
       }
 
-      const data: Data = await response.json(); 
+      const data: Data = await response.json();
       res.setHeader(
         "Set-Cookie",
-        `access_token=${data.access_token}; HttpOnly; Path=/; Max-Age=${
-          60 * 60 * 24
-        }; ${process.env.NODE_ENV === "production" ? "Secure;" : ""}`
+        cookie.serialize("access_token", data.access_token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          path: "/",
+          maxAge: 60 * 60 * 24,
+        })
       );
       res.status(response.status).json(data.user_data);
     } catch (error: any) {
