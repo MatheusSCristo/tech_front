@@ -151,9 +151,10 @@ const SubjectModal = ({
     getTeachers();
   }, []);
 
+
   return (
     <>
-      <section className="z-10 fixed top-0 left-0 bg-[#edededae] flex flex-col justify-center items-center w-full h-full">
+      <section className="z-20 fixed top-0 left-0 bg-[#edededae] flex flex-col justify-center items-center w-full h-full ">
         <div className="bg-white border border-black rounded relative w-[30%] flex flex-col  pb-5 pt-3 px-2 gap-3">
           <span
             className="absolute top-1 right-2 cursor-pointer"
@@ -161,7 +162,7 @@ const SubjectModal = ({
           >
             X
           </span>
-          <h1 className="xl:text-[1em] 2xl:text-[1.5em] font-bold border-b-[1px] border-black w-full text-center">
+          <h1 className="xl:text-[1em] 2xl:text-[1.5em] font-bold border-b-[1px] border-black w-full text-center uppercase">
             {subject.subject.name}
           </h1>
           <div className="flex flex-col gap-1 border-b-[1px] border-black">
@@ -179,7 +180,7 @@ const SubjectModal = ({
                 <h2 className="w-full font-bold">Pré requisitos:</h2>
                 <div className="flex flex-col w-full">
                   {subject.subject.pre_requisites.map((prerequisite) => (
-                    <h3 className="" key={prerequisite.id}>
+                    <h3 className="capitalize" key={prerequisite.id}>
                       {prerequisite.id}-{prerequisite.name}
                     </h3>
                   ))}
@@ -216,12 +217,12 @@ const SubjectModal = ({
               <h2 className="font-bold">Professor:</h2>
               <select
                 className="border border-black w-full rounded"
-                value={teacherName || ""}
+                value={teacherName || "Padrão"}
                 onChange={(e) => setTeacherName(e.target.value)}
               >
                 {teachers.map((teacher) => (
                   <option className="truncate" key={teacher.id}>
-                    {teacher.name === "Padrão" ? "Não informar" : teacher.name}
+                    {teacher.name}
                   </option>
                 ))}
               </select>

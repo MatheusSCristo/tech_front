@@ -153,7 +153,7 @@ const Register = () => {
           </div>
           <button
             type="submit"
-            className="bg-white rounded w-fit px-5 self-center mb-0 hover:scale-[1.05] duration-300 "
+            className="bg-white rounded w-fit px-5 self-center mb-0 hover:scale-[1.05] duration-300 my-2"
           >
             Criar conta
           </button>

@@ -46,7 +46,7 @@ const Table = ({
               <td className="text-[#575757] truncate max-w-[100px] text-center">
                 {subject.id}
               </td>
-              <td className="text-[#575757] truncate max-w-[100px] overflow-hidden text-ellipsis">
+              <td className="text-[#575757] truncate max-w-[100px] overflow-hidden text-ellipsis uppercase">
                 {subject.name}
               </td>
               <td className="text-[#575757] text-center">

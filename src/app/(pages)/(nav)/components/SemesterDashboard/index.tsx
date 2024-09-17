@@ -13,35 +13,44 @@ import "swiper/css/scrollbar";
 const SemesterDashboard = () => {
   const { semesters } = useContext(SemesterContext);
   const { user } = useContext(UserContext);
+
   return (
-    <div className="bg-[#ffffffd6] m-10 flex flex-col items-center p-5 rounded-xl gap-10 xl:w-[800px] 2xl:w-[1200px] h-fit gap-5">
+    <div className="bg-[#ffffffd6] m-10 flex flex-col items-center justify-center p-5 rounded-xl gap-10 xl:w-[800px] 2xl:w-[1200px] h-fit gap-5 ">
       <h1 className="text-[1.5em]">Semestres</h1>
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y]}
         spaceBetween={10}
         slidesPerView={1}
-        className="w-full"
+        className="w-full "
         navigation
       >
         {semesters?.map((semester) => (
-          <SwiperSlide className="!flex !flex-col items-center" key={semester.id}>
+          <SwiperSlide
+            className="!flex !flex-col items-center"
+            key={semester.id}
+          >
             <h2 className="text-[1.5em]">{semester.semester}°</h2>
-            <div className="flex-wrap flex flex-row justify-center">
+            <div className="flex-wrap flex flex-row justify-center items-center w-full ">
+              {semester.subjects.length == 0 && (
+                <div className="h-full w-full flex items-center justify-center">
+                  <h1>Não há matérias cadastradas nesse semestre</h1>
+                </div>
+              )}
               {semester.subjects.map((subject) => {
                 const isMandatory = user?.structure.mandatory_subjects.some(
                   (item) => item.id === subject.subject.id
                 );
                 return (
                   <div
-                  key={subject.id}
+                    key={subject.id}
                     className={`${
                       subject.finished ? "opacity-[50%]" : "opacity-1"
                     }  overflow-hidden ${
                       isMandatory ? "bg-mandatoryBlue" : "bg-optionalGray"
-                    }  border border-black h-[200px] flex-1  flex items-center justify-center rounded p-3 shadow-xl m-5 hover:scale-[1.05] duration-300
+                    } w-[20%] border border-black h-[200px] flex items-center justify-center rounded p-3 shadow-xl m-5 hover:scale-[1.05] duration-300
                   `}
                   >
-                    <span className="text-center text-wrap truncate">
+                    <span className="text-center text-wrap truncate uppercase">
                       {subject.subject.name}
                     </span>
                   </div>

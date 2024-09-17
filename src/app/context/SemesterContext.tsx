@@ -10,6 +10,7 @@ const SemesterContext = createContext({} as SemesterContextType);
 
 const SemesterProvider = ({ children }: { children: React.ReactNode }) => {
   const [semesters, setSemesters] = useState<SemesterUserType[]>([]);
+
   return (
     <SemesterContext.Provider value={{ semesters,setSemesters  }}>
       {children}

@@ -182,13 +182,13 @@ const Semesters = () => {
           <h1 className="text-[2.5em]">Semestres</h1>
           <div className="absolute right-2 flex flex-col ">
             <button
-              className="border-b-[1px] border-black font-bold text-lg hover:scale-[1.05] duration-300,mm "
+              className="underline underline-offset-4 font-bold text-lg hover:scale-[1.05] duration-300,mm "
               onClick={() => handleSaveSemester(user?.id || "", semesters,setSemesters,setSemesterMessage,setUser)}
             >
               Salvar alterações
             </button>
             <button
-              className="border-b-[1px] border-black font-bold text-lg hover:scale-[1.05] duration-300,mm "
+              className="underline underline-offset-4 font-bold text-lg hover:scale-[1.05] duration-300,mm "
               onClick={() => handleResetSemesters(user?.id || "",setSemesters,setSemesterMessage,setUser)}
             >
               Resetar semestres

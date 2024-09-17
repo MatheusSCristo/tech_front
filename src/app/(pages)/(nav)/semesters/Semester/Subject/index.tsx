@@ -107,7 +107,7 @@ const Subject = ({
                 ${checked ? "shadow-[#2587e265]" : ""} 
                 `}
             >
-              <span className="text-center text-wrap truncate">
+              <span className="text-center text-wrap truncate uppercase">
                 {subject.subject.name}
               </span>
             </div>

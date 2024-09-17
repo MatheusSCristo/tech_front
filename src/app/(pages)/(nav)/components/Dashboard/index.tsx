@@ -29,7 +29,10 @@ const Dashboard = () => {
         user.structure.mandatory_subjects.every(
           (optionalSubject) => optionalSubject.id != subject.subject.id
         )
-    );
+    ).reduce((acc,subject)=>acc+subject.subject.ch,0)
+
+
+  
 
   useEffect(() => {
     const getSubjects = async () => {
@@ -77,7 +80,7 @@ const Dashboard = () => {
         {user && (
           <div className="w-full ">
             <h3>
-              Matérias obrigátorias:{mandatorySubjectsFinished?.length}/
+              Matérias obrigátorias: {mandatorySubjectsFinished?.length}/
               {mandatorySubjects.length}
             </h3>
             <LinearProgress
@@ -93,15 +96,12 @@ const Dashboard = () => {
         {user && (
           <div className="w-full">
             <h3>
-              Matérias optativas:{optionalSubjectsFinished?.length}/
-              {subjects.length - mandatorySubjects.length}
+              Carga Horária Optativa: {optionalSubjectsFinished}/{user.structure.optional_ch_min}h
             </h3>
             <LinearProgress
               variant="determinate"
-              value={
-                mandatorySubjectsFinished?.length ||
-                0 / mandatorySubjects.length
-              }
+              value={(optionalSubjectsFinished || 0) / user.structure.optional_ch_min * 100}
+              
             />
           </div>
         )}
