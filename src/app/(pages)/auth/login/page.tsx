@@ -76,7 +76,7 @@ const Login = () => {
       setLoading(true);
       try {
         const response = await fetch("/api/google/login", {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },

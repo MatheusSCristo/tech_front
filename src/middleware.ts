@@ -25,7 +25,6 @@ export async function middleware(req: NextRequest, res: NextResponse) {
       }
       return NextResponse.next();
     } catch (error) {
-      console.log("error,apagando cookies", error);
       const response = NextResponse.redirect(new URL("/auth/login", req.url));
       response.cookies.delete("access_token");
       response.cookies.delete("next-auth.session-token");
